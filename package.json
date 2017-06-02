@@ -1,0 +1,27 @@
+{
+  "name": "lieuxdestages",
+  "version": "0.0.1",
+  "description": "Lieux de stages",
+  "authors": [
+    "Chloé <chloe.labrousse@hotmail.fr>",
+    "GB <gbourel@gmail.com>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "grunt": "^1.0.1"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-cssmin": "^2.0.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-less": "^1.4.1",
+    "grunt-contrib-uglify": "^2.2.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-usage": "^1.1.1",
+    "grunt-usemin": "^3.1.1",
+    "time-grunt": "^1.4.0"
+  }
+}
