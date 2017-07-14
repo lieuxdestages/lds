@@ -64,6 +64,8 @@ module.exports = function(grunt){
           dest: 'docs',
           src: [
             'css/font-awesome.min.css',
+            'css/lds.css',
+            'css/lds-light.css',
             'img/**/*',
             'index.html',
             'favicon.ico',
