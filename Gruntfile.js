@@ -18,9 +18,19 @@ module.exports = function(grunt){
           ieCompat: true
         },
         files: [{
-          'public/css/lds.css': ['less/*.less']
+          'public/css/lds.css': ['less/lds.less']
         }]
       },
+      light: {
+        options: {
+          banner: '/* GENERATED 4 LDS */\n',
+          sourceMap: true,
+          ieCompat: true
+        },
+        files: [{
+          'public/css/lds-light.css': ['less/lds-light.less']
+        }]
+      }
     },
     cssmin: {
       options: {
