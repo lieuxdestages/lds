@@ -1,0 +1,306 @@
+/* GENERATED 4 LDS */
+/*
+@cfg: #5C6773;
+@bg: #FAFAFA;
+@accent: #FF6A00;
+@uifg: #828C99;
+@pbg: #FFFFFF;
+@shadow: #A0A0A0;
+@path_fg: #B0BEC5;
+@row_bg: #F5F5F5;
+@normal: #828C99;
+@puck: #000000;
+@grid_divider: #E2E4E7 ;
+@error: #FF3333;
+@line_hg: #F2F2F2;
+@gutterFg: #D9D8D7;
+@selection: #F0EEE4;
+@stack_guide: #DEDDDC;
+@active_guide: #B3B2B1;
+@tag: #41A6D9;
+@func: #F29718;
+@regexp: #4DBF99;
+@string: #86B300;
+@comment: #ABB0B6;
+@sup_var: #F07178;
+@es_spec: #CCA37A;
+@keyword: #F2590C;
+@operator: #E7C547;
+@constant: #A37ACC;
+*/
+body {
+  font-family: 'Roboto', sans-serif;
+  color: #A6E22E;
+  margin: 0;
+  background: #282828;
+}
+html {
+  position: relative;
+  min-height: 100%;
+}
+.lds-needuser {
+  display: none;
+}
+h2 {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  color: #333;
+  opacity: 0.9;
+}
+.lds-header {
+  width: 100%;
+}
+.lds-header .lds-brand {
+  font-size: 18px;
+  line-height: 20px;
+  padding: 15px 0;
+  height: 50px;
+}
+.lds-header .lds-brand span {
+  margin: 12px 0;
+  color: #F8F8F0;
+}
+.lds-header .lds-brand .version {
+  font-size: 60%;
+}
+.lds-header .right-buttons {
+  text-align: right;
+}
+.lds-header button.btn.btn-lds {
+  color: #F8F8F2;
+  background: #49483E;
+  border-color: #888;
+  margin-top: 8px;
+}
+.lds-header .lds-connect {
+  display: none;
+}
+.lds-header .userimg {
+  display: inline-block;
+  height: 1.8em;
+  border-radius: 50%;
+}
+.lds-header .username {
+  display: inline-block;
+}
+main .table th,
+main .table thead {
+  color: #66D9EF;
+  border: 1px solid #75715E;
+  cursor: pointer;
+}
+main .table th .sorted,
+main .table thead .sorted {
+  color: #AE81FF;
+}
+main .table th .sorted:after,
+main .table thead .sorted:after {
+  font-family: FontAwesome;
+  content: "\f0d8";
+  margin-left: 4px;
+}
+main .table th .sorted.desc:after,
+main .table thead .sorted.desc:after {
+  font-family: FontAwesome;
+  content: "\f0d7";
+  margin-left: 4px;
+}
+main .table td {
+  border: 1px solid #75715E;
+}
+main .table td.getComments > div {
+  max-height: 64px;
+  overflow: hidden;
+}
+main .table td.getComments p {
+  margin: 0;
+  border-bottom: 1px dotted #888;
+}
+main .table td.getComments p:last-child {
+  border-bottom: none;
+}
+main .table tbody tr:hover {
+  color: #F92672;
+  background: #49483E;
+}
+main #overlay {
+  position: fixed;
+  top: 52px;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  padding: 12px;
+  background-color: #49483E;
+  border-radius: 1em;
+  transform: translate3d(150%, 0, 0);
+  -webkit-transition: -webkit-transform 500ms;
+  transition: transform 500ms;
+  min-height: 420px;
+}
+main #overlay.enabled {
+  transform: translate3d(0, 0, 0);
+}
+main #overlay .buttons {
+  margin-bottom: 22px;
+}
+main #overlay .buttons .btn {
+  display: none;
+}
+main #overlay .name {
+  margin-top: 0px;
+}
+main #overlay .type {
+  width: 60%;
+  margin: 0 auto;
+}
+main #overlay h2 {
+  width: 80%;
+  margin: 0 auto 8px auto;
+}
+main #overlay #myrating,
+main #overlay #mycomment {
+  cursor: pointer;
+  color: #66D9EF;
+}
+main #overlay #mycomment.edit {
+  padding: 0;
+}
+main #overlay textarea.form-control {
+  background: #282828;
+  color: #FFD569;
+}
+main #overlay .comments {
+  color: #529B2F;
+}
+main #overlay .comments .comment {
+  border-bottom: 1px dashed #A6E22E;
+}
+main #overlay .comments .comment .date {
+  text-align: right;
+  font-size: 80%;
+}
+main #overlay .comments .comment:last-child {
+  border-bottom: none;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  margin-top: 30px;
+  height: 72px;
+  padding: 20px 0;
+  color: #F8F8F0;
+  background: #49483E;
+}
+#loading-status {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  color: #AE81FF;
+  font-size: 64px;
+  margin: -32px -32px;
+}
+[lds-text-edit] {
+  cursor: pointer;
+  border: 1px dotted #282828;
+  color: #66D9EF;
+  min-height: 1.6em;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+[lds-text-edit]:hover {
+  background: #282828;
+}
+.edit {
+  border: 1px solid #448;
+  padding: 0;
+}
+.edit input {
+  padding: 4px;
+  background: #282828;
+  color: #FFD569;
+}
+#myrating,
+#mycomment {
+  padding: 0 8px;
+}
+.rating {
+  font-size: 18px;
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  text-align: left;
+}
+.rating > span {
+  display: inline-block;
+  position: relative;
+  width: 1.1em;
+}
+.rating > span:hover:before,
+.rating > span:hover ~ span:before {
+  content: "\2605";
+  position: absolute;
+}
+.level-1 {
+  margin-left: 8px;
+}
+.level-2 {
+  margin-left: 16px;
+}
+.level-3 {
+  margin-left: 24px;
+}
+.level-4 {
+  margin-left: 32px;
+}
+.collapsed .more {
+  display: none;
+}
+#noerror-alert {
+  position: relative;
+}
+#noerror-alert img {
+  position: absolute;
+  bottom: 0;
+  height: 100px;
+  right: 24px;
+}
+.glyphicon-refresh-animate {
+  -webkit-animation: spin 1.2s infinite linear;
+  -moz-animation-name: spin 1.2s infinite linear;
+  -o-animation-name: spin 1.2s infinite linear;
+  -animation: spin 1.2s infinite linear;
+}
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spin {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-o-keyframes spin {
+  from {
+    -o-transform: rotate(0deg);
+  }
+  to {
+    -o-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+  to {
+    transform: scale(1) rotate(360deg);
+  }
+}
+/*# sourceMappingURL=lds.css.map */
