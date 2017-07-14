@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html ng-app>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Lieux de stages</title>
+    <meta name="description" content="">
+    <meta property="og:title" content="Lieux de Stages">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://clabrousse.com/">
+    <meta property="og:description" content="Lieux de stages.">
+    <meta property="og:image" content="http://clabrousse.com/img/favicon-152.png">
+    <meta property="og:site_name" content="Lieux de stages">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="196x196" href="/img/favicon-192.png">
+    <link rel="icon" type="image/png" sizes="160x160" href="/img/favicon-160.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/img/favicon-96.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="/img/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16.png">
+    <link rel="apple-touch-icon" href="/img/favicon-57.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/img/favicon-114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/img/favicon-72.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/img/favicon-144.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/img/favicon-60.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/img/favicon-120.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon-76.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/img/favicon-152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/img/favicon-180.png">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="/img/favicon-144.png">
+    <meta name="msapplication-config" content="/img/browserconfig.xml">
+
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta http-equiv="Default-Style" content="light">
+    <link rel="stylesheet" href="/css/lds.css" title="dark">
+    <link rel="stylesheet" href="/css/lds-light.css" title="light">
+  </head>
+  <body class="lds">
+    <!-- Header and navbar -->
+    <header>
+      <div class="lds-header">
+        <div class="col-sm-4">
+          <a class="lds-brand" href="/">
+            <span class="fa fa-cutlery"> Lieux De Stages</span>
+            <span class="version"> BETA</span>
+          </a>
+        </div>
+        <div class="col-sm-4 text-right">
+          <small>
+            <img class="userimg" />
+            <p class="username" class="text-center"></p>
+          </small>
+        </div>
+        <div class="col-sm-4 right-buttons">
+          <button class="lds-addplace lds-needuser btn btn-lds fa fa-plus" title="Ajouter un lieu" onclick="LDS.newPlace()"></button>
+          <button class="lds-logout lds-needuser btn btn-lds fa fa-lock" title="Lock" onclick="LDS.signout()"> Déconnexion</button>
+          <button class="lds-connect btn btn-lds fa fa-pencil-square-o" title="Edit" onclick="LDS.signin()"> Se connecter</button>
+        <div class="col-sm-4">
+      </div>
+      <div id="loading-status">
+        <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main>
+
+      <!-- Main table display -->
+      <table id="places" class="table">
+      </table>
+
+      <!-- Overlay -->
+      <div id="overlay">
+        <div class="buttons">
+          <button class="btn btn-primary pull-right" onclick="LDS.saveOverlay()">Valider</button>
+          <button class="btn btn-default btn-xs pull-right" onclick="LDS.closeOverlay()">Annuler</button>
+          <button class="close pull-right" onclick="LDS.closeOverlay()"><i class="fa fa-close"></i></button>
+        </div>
+        <div class="type text-center" lds-text-edit="type">Type (ex. "restaurant")</div>
+        <h2 class="name" lds-text-edit="name">Nom</h2>
+        <div class="col-sm-4"> <!-- Global params -->
+          <div class="row">
+            <div class="col-xs-4">
+              <p>Lieu</p>
+            </div>
+            <div class="col-xs-8">
+              <p class="location" lds-text-edit="location"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-4">
+              <p>Adresse</p>
+            </div>
+            <div class="col-xs-8">
+              <p class="address" lds-text-edit="address"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-4">
+              <p>Tuteur</p>
+            </div>
+            <div class="col-xs-8">
+              <p class="tutor" lds-text-edit="tutor"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-4">
+              <p>Portable</p>
+            </div>
+            <div class="col-xs-8">
+              <p class="cell" lds-text-edit="cell"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-4">
+              <p>Fixe</p>
+            </div>
+            <div class="col-xs-8">
+              <p class="phone" lds-text-edit="phone"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-4">
+              <p>Fax</p>
+            </div>
+            <div class="col-xs-8">
+              <p class="fax" lds-text-edit="fax"></p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-4">
+              <p>E-mail</p>
+            </div>
+            <div class="col-xs-8">
+              <p class="email" lds-text-edit="email"></p>
+            </div>
+          </div>
+        </div><!-- End Global params -->
+        <div class="col-sm-8"><!-- Comments & rating -->
+          <div class="col-sm-6 lds-needuser">Mon avis</div>
+          <div id="myrating" class="col-sm-6 lds-needuser">Aucun avis</div>
+          <div class="col-sm-6 lds-needuser">Mon commentaire</div>
+          <div id="mycomment" class="col-sm-6 lds-needuser">Aucun commentaire</div>
+          <div class="col-sm-12 lds-needuser">---</div>
+          <div class="col-sm-6">Pertinence de l'entreprise</div>
+          <div class="col-sm-6"><span class="getRate"></span> / 5<small class="pull-right"><span class="getRateCount"></span> avis</small></div>
+          <div class="col-sm-6">Commentaires</div>
+          <div class="col-sm-6 text-right"><small><span class="getCommentCount"></span> commentaires</small></div>
+          <div class="col-sm-12 comments"></div>
+        </div><!-- End Comments & rating -->
+      </div> <!--overlay -->
+    </main>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/fr.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
+
+    <script type="application/javascript" src="/lds.js"></script>
+    <script async defer src="https://apis.google.com/js/auth.js"></script>
+  </body>
+</html>
