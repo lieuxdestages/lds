@@ -1,4 +1,5 @@
 node_modules/
+bower_components/
 
 # Generated from less
 public/css/lds.css
