@@ -2,6 +2,8 @@ module.exports = function(grunt){
   const devPort       = 9200,
     connectPort        = 9287;
 
+  require('load-grunt-tasks')(grunt);
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
@@ -60,6 +62,24 @@ module.exports = function(grunt){
         }]
       }
     },
+    babel: {
+      options: {
+        presets: ['es2015']
+      },
+      dev: {
+        options: {
+          sourceMap: true
+        },
+        files: {
+          'public/lds.js': 'js/lds.js'
+        }
+      },
+      dist: {
+        files: {
+          'docs/lds.js': 'js/*.js'
+        }
+      }
+    },
     uglify: {
       options: {
         mangle: false,
@@ -88,8 +108,12 @@ module.exports = function(grunt){
         livereload: 29976
       },
       sources: {
-        files: ['public/index.html', 'public/lds.js', 'public/i18n/*.js'],
+        files: ['public/index.html', 'public/i18n/*.js'],
         tasks: []
+      },
+      babel: {
+        files: ['js/*.js'],
+        tasks: ['babel:dev']
       },
       css: {
         files: ['less/*.less'],
@@ -98,16 +122,7 @@ module.exports = function(grunt){
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-connect');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-usage');
-
-  grunt.registerTask('release', ['less', 'cssmin', 'copy:dist']);
-  grunt.registerTask('dev', ['less', 'connect:local', 'watch']);
+  grunt.registerTask('release', ['less', 'cssmin', 'babel:dist', 'copy:dist']);
+  grunt.registerTask('dev', ['less', 'babel:dev', 'connect:local', 'watch']);
   grunt.registerTask('default', ['usage']);
 };
