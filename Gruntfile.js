@@ -56,22 +56,36 @@ module.exports = function(grunt){
       }
     },
     copy: {
+      dev: {
+        src: 'index.html', dest: 'public/index.html',
+        options: {
+          process: function (content) {
+            return content.replace(/%BASE_PATH%/g, '');
+          }
+        }
+      },
       dist: {
         files: [{
-          expand: true,
-          dot: true,
-          cwd: 'public',
-          dest: 'docs',
+          expand: true, dot: true,
+          cwd: 'public', dest: 'docs',
           src: [
             'css/font-awesome.min.css',
             'css/lds.css',
             'css/lds-light.css',
             'img/**/*',
-            'index.html',
             'favicon.ico',
+            'jquery.resizableColumns.min.js',
             'js/lds.js'
           ]
         }]
+      },
+      distIndex: {
+        src: 'index.html', dest: 'docs/index.html',
+        options: {
+          process: function (content) {
+            return content.replace(/%BASE_PATH%/g, 'https://gbourel.github.io/lds');
+          }
+        }
       }
     },
     babel: {
@@ -119,8 +133,12 @@ module.exports = function(grunt){
       options: {
         livereload: 29976
       },
-      sources: {
-        files: ['public/index.html', 'public/i18n/*.js'],
+      html: {
+        files: ['index.html'],
+        tasks: ['copy:dev']
+      },
+      i18n: {
+        files: ['public/i18n/*.js'],
         tasks: []
       },
       babel: {
@@ -134,7 +152,7 @@ module.exports = function(grunt){
     }
   });
 
-  grunt.registerTask('release', ['less', 'cssmin', 'babel:dist', 'copy:dist']);
-  grunt.registerTask('dev', ['less', 'babel:dev', 'connect:local', 'watch']);
+  grunt.registerTask('release', ['less', 'cssmin', 'babel:dist', 'copy:dist', 'copy:distIndex']);
+  grunt.registerTask('dev', ['less', 'babel:dev', 'connect:local', 'copy:dev', 'watch']);
   grunt.registerTask('default', ['usage']);
 };
