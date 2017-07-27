@@ -268,7 +268,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         gapi.client.sheets.spreadsheets.values.batchGet({
           'key': apiKey,
           'spreadsheetId': spreadsheetId,
-          'ranges': [KModel.getRange(model), 'Avis!A2:E']
+          'ranges': [KModel.getRange(model, null, 4), 'Avis!A2:E']
         }).then(function (res) {
           if (res && res.result && res.result.valueRanges) {
             var instance,
@@ -313,13 +313,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       self.commentCnt = 0; // Place's comments count
       _.assign(self._data, {
         getRate: function getRate() {
-          return self.rate;
+          return self.rate ? self.rate + ' / 5' : '?';
         },
         getRateCount: function getRateCount() {
-          return self.rateCnt;
+          return self.rateCnt ? self.rateCnt : 'Aucun';
         },
         getCommentCount: function getCommentCount() {
-          return self.commentCnt;
+          if (!self.commentCnt) {
+            return 'Aucun commentaire';
+          }
+          return self.commentCnt + (self.commentCnt > 1 ? ' commentaires' : ' commentaire');
         },
         getComments: function getComments() {
           var str = '';
@@ -396,7 +399,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   Place.type = Place;
   Place.sheet = 'Lieux';
-  Place.metadata = [{ field: 'name', headerName: 'Nom', col: 'A' }, { field: 'location', headerName: 'Lieu', col: 'B' }, { field: 'address', headerName: 'Adresse', col: 'C' }, { field: 'getRate', headerName: 'Pertinence de l\'entreprise' }, { field: 'getRateCount', label: 'Nombre d\'avis' }, { field: 'getComments', headerName: 'Commentaires' }, { field: 'getCommentCount', label: 'Nombre de commentaires' }, { field: 'tutor', headerName: 'Tuteur', col: 'D' }, { field: 'cell', headerName: 'Portable', col: 'E' }, { field: 'phone', headerName: 'Fixe', col: 'F' }, { field: 'fax', headerName: 'Fax', col: 'G' }, { field: 'type', headerName: 'Type', col: 'H' }, { field: 'email', headerName: 'E-mail', col: 'I' }, { field: 'id', col: 'J' }, { field: 'opinions', array: 'Opinion' }];
+  Place.metadata = [{ field: 'name', headerName: 'Nom', col: 'A' }, { field: 'location', headerName: 'Lieu', col: 'B' }, { field: 'address', col: 'C' }, // , headerName: 'Adresse'
+  { field: 'getRate', headerName: 'Pertinence de l\'entreprise' }, { field: 'getRateCount', label: 'Nombre d\'avis' }, { field: 'getComments', headerName: 'Commentaires' }, { field: 'getCommentCount', label: 'Nombre de commentaires' }, { field: 'tutor', headerName: 'Tuteur', col: 'D' }, { field: 'cell', headerName: 'Portable', col: 'E' }, { field: 'phone', headerName: 'Fixe', col: 'F' }, { field: 'fax', col: 'G' }, // , headerName:'Fax'
+  { field: 'type', headerName: 'Type', col: 'H' }, { field: 'email', col: 'I' }, //, headerName:'E-mail'
+  { field: 'id', col: 'J' }, { field: 'opinions', array: 'Opinion' }];
 
   var Opinion = function (_KModel2) {
     _inherits(Opinion, _KModel2);
@@ -438,6 +444,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       toggleEltEdit($(evt.target));
       evt.stopPropagation();
     });
+    overlayElt.find('.alert .close').click(function (evt) {
+      overlayElt.find('.alert').slideUp();
+    });
     overlayElt.click(function () {
       var last;
       if (editElt) {
@@ -448,6 +457,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     });
 
     function toggleTextEdit(elt, field) {
+      if (!myId) {
+        overlayElt.find('.alert').slideDown();
+        setTimeout(function () {
+          overlayElt.find('.alert').slideUp();
+        }, 5000);
+        return;
+      }
       var oldVal = model.get(field),
           newVal,
           input,
@@ -468,10 +484,25 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }
         input = $('<input type="text" class="form-control"></input>');
         input.val(oldVal);
+        input.keydown(function (e) {
+          if (e.keyCode === 9) {
+            e.preventDefault();
+          } // Tab
+        });
         input.keyup(function (e) {
+          var elts;
+          if (e.keyCode === 9) {
+            // Tab
+            toggleEltEdit(elt);
+            elts = overlayElt.find('[lds-text-edit]');
+            _.findIndex(elts, function (e) {
+              console.info(e);
+              return false;
+            });
+          }
           if (e.keyCode === 13) {
             toggleEltEdit(elt);
-          }
+          } // Return
         });
         editElt = elt;
         elt.addClass('edit');
@@ -872,8 +903,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           console.error(err);
         }
 
-        mainTable = new Table($('#places'), Place.metadata, places);
+        var tableElt = $('#places');
+        mainTable = new Table(tableElt, Place.metadata, places);
         mainTable.display();
+        tableElt.resizableColumns();
 
         function newPlace() {
           overlay.setData(Place.metadata, null);

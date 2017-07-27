@@ -1,4 +1,24 @@
 /* GENERATED 4 LDS */
+/* --- Resizable columns --- */
+.rc-handle-container {
+  position: relative;
+}
+.rc-handle-container .rc-handle {
+  position: absolute;
+  width: 7px;
+  cursor: ew-resize;
+  margin-left: -3px;
+  z-index: 2;
+}
+table.rc-table-resizing {
+  cursor: ew-resize;
+}
+table.rc-table-resizing thead,
+table.rc-table-resizing thead > th,
+table.rc-table-resizing thead > th > a {
+  cursor: ew-resize;
+}
+/* --- /Resizable columns --- */
 body {
   font-family: 'Roboto', sans-serif;
   color: #444;
@@ -57,45 +77,59 @@ h2 {
 .lds-header .username {
   display: inline-block;
 }
-main .table th,
 main .table thead {
-  color: #529B2F;
-  border: 1px solid #75715E;
+  color: #F8F8F2;
+  background-color: #529B2F;
   cursor: pointer;
 }
-main .table th .sorted,
-main .table thead .sorted {
-  color: #AE81FF;
+main .table thead tr > th {
+  vertical-align: middle;
+  text-align: center;
+  border: 2px solid white;
 }
-main .table th .sorted:after,
+main .table thead tr > th:first-child {
+  border-top-left-radius: 12px;
+}
+main .table thead tr > th:last-child {
+  border-top-right-radius: 12px;
+}
+main .table thead .sorted {
+  color: #cfb4ff;
+}
 main .table thead .sorted:after {
   font-family: FontAwesome;
   content: "\f0d8";
   margin-left: 4px;
 }
-main .table th .sorted.desc:after,
 main .table thead .sorted.desc:after {
   font-family: FontAwesome;
   content: "\f0d7";
   margin-left: 4px;
 }
-main .table td {
-  border: 1px solid #75715E;
+main .table > tbody tr:nth-child(2n) {
+  background-color: #eff9ea;
 }
-main .table td.getComments > div {
+main .table > tbody tr:nth-child(2n+1) {
+  background-color: #fefffd;
+}
+main .table > tbody tr:hover {
+  color: #F92672;
+  background: #F8F8F2;
+}
+main .table > tbody tr td {
+  border: 2px solid white;
+  vertical-align: middle;
+}
+main .table > tbody tr td.getComments > div {
   max-height: 64px;
   overflow: hidden;
 }
-main .table td.getComments p {
+main .table > tbody tr td.getComments p {
   margin: 0;
   border-bottom: 1px dotted #888;
 }
-main .table td.getComments p:last-child {
+main .table > tbody tr td.getComments p:last-child {
   border-bottom: none;
-}
-main .table tbody tr:hover {
-  color: #F92672;
-  background: #F8F8F2;
 }
 main #overlay {
   position: fixed;
@@ -110,6 +144,9 @@ main #overlay {
   -webkit-transition: -webkit-transform 500ms;
   transition: transform 500ms;
   min-height: 420px;
+}
+main #overlay .alert {
+  display: none;
 }
 main #overlay.enabled {
   transform: translate3d(0, 0, 0);
@@ -176,7 +213,7 @@ main #overlay .comments .comment:last-child {
 }
 [lds-text-edit] {
   cursor: pointer;
-  border: 1px dotted #282828;
+  border: 1px dotted #CCC;
   color: #75715E;
   min-height: 1.6em;
   padding: 4px 8px;

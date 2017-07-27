@@ -41,8 +41,9 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://gbourel.github.io/lds/css/lds-light.css" title="light">
     <meta http-equiv="Default-Style" content="light">
-    <!-- <link rel="stylesheet" href="https://gbourel.github.io/lds//css/lds.css" title="dark"> -->
+    <!-- <link rel="stylesheet" href="//css/lds.css" title="dark"> -->
     <link rel="stylesheet" href="https://gbourel.github.io/lds/css/lds-light.css" title="light">
   </head>
   <body class="lds">
@@ -81,6 +82,12 @@
 
       <!-- Overlay -->
       <div id="overlay">
+        <div class="alert alert-danger" role="alert">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          <span class="sr-only">Error:</span>
+          <span class="alert-content">Connectez-vous pour pouvoir éditer ce lieu.</span>
+          <button class="close pull-right"><i class="fa fa-close"></i></button>
+        </div>
         <div class="buttons">
           <button class="btn btn-primary pull-right" onclick="LDS.saveOverlay()">Valider</button>
           <button class="btn btn-default btn-xs pull-right" onclick="LDS.closeOverlay()">Annuler</button>
@@ -153,9 +160,9 @@
           <div id="mycomment" class="col-sm-6 lds-needuser">Aucun commentaire</div>
           <div class="col-sm-12 lds-needuser">---</div>
           <div class="col-sm-6">Pertinence de l'entreprise</div>
-          <div class="col-sm-6"><span class="getRate"></span> / 5<small class="pull-right"><span class="getRateCount"></span> avis</small></div>
+          <div class="col-sm-6"><span class="getRate"></span><small class="pull-right"><span class="getRateCount"></span> avis</small></div>
           <div class="col-sm-6">Commentaires</div>
-          <div class="col-sm-6 text-right"><small><span class="getCommentCount"></span> commentaires</small></div>
+          <div class="col-sm-6 text-right"><small><span class="getCommentCount"></span> </small></div>
           <div class="col-sm-12 comments"></div>
         </div><!-- End Comments & rating -->
       </div> <!--overlay -->
@@ -166,7 +173,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
 
-    <script type="application/javascript" src="https://gbourel.github.io/lds/lds.js"></script>
+    <script type="text/javascript" src="https://gbourel.github.io/lds/jquery.resizableColumns.min.js"></script>
+    <script type="text/javascript" src="https://gbourel.github.io/lds/lds.js"></script>
     <script async defer src="https://apis.google.com/js/auth.js"></script>
   </body>
 </html>
