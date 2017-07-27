@@ -251,13 +251,15 @@
       self.commentCnt = 0;    // Place's comments count
       _.assign(self._data, {
         getRate: function(){
-          return self.rate;
+          return self.rate ? self.rate + ' / 5' : '?';
         },
         getRateCount: function(){
-          return self.rateCnt;
+          return self.rateCnt ? self.rateCnt : 'Aucun';
         },
         getCommentCount: function(){
-           return self.commentCnt;
+          if(!self.commentCnt){ return 'Aucun commentaire'; }
+          return self.commentCnt +
+            ((self.commentCnt > 1) ? ' commentaires' : ' commentaire');
         },
         getComments: function(){
           var str = '';
@@ -322,7 +324,7 @@
   Place.metadata = [
     { field: 'name', headerName: 'Nom', col: 'A'},
     { field: 'location', headerName: 'Lieu', col: 'B'},
-    { field: 'address', headerName: 'Adresse', col: 'C'},
+    { field: 'address', col: 'C'}, // , headerName: 'Adresse'
     { field: 'getRate', headerName:'Pertinence de l\'entreprise'},
     { field: 'getRateCount', label:'Nombre d\'avis'},
     { field: 'getComments', headerName:'Commentaires'},
@@ -330,9 +332,9 @@
     { field: 'tutor', headerName:'Tuteur', col: 'D'},
     { field: 'cell', headerName:'Portable', col: 'E'},
     { field: 'phone', headerName:'Fixe', col: 'F'},
-    { field: 'fax', headerName:'Fax', col: 'G'},
+    { field: 'fax', col: 'G'}, // , headerName:'Fax'
     { field: 'type', headerName:'Type', col: 'H'},
-    { field: 'email', headerName:'E-mail', col: 'I'},
+    { field: 'email', col: 'I'}, //, headerName:'E-mail'
     { field: 'id', col: 'J'},
     { field: 'opinions', array: 'Opinion'}
   ];
@@ -373,6 +375,9 @@
       toggleEltEdit($(evt.target));
       evt.stopPropagation();
     });
+    overlayElt.find('.alert .close').click(function(evt){
+      overlayElt.find('.alert').slideUp();
+    });
     overlayElt.click(function(){
       var last;
       if(editElt){
@@ -383,6 +388,13 @@
     });
 
     function toggleTextEdit(elt, field){
+      if(!myId) {
+        overlayElt.find('.alert').slideDown();
+        setTimeout(function(){
+          overlayElt.find('.alert').slideUp();
+        }, 5000);
+        return;
+      }
       var oldVal = model.get(field),
         newVal, input, last;
       if(elt.hasClass('edit')){
@@ -401,7 +413,21 @@
         }
         input = $('<input type="text" class="form-control"></input>');
         input.val(oldVal);
-        input.keyup(function(e){ if(e.keyCode === 13){ toggleEltEdit(elt); }});
+        input.keydown(function(e){
+          if(e.keyCode === 9){ e.preventDefault(); }    // Tab
+        });
+        input.keyup(function(e){
+          var elts;
+          if(e.keyCode === 9){                                      // Tab
+            toggleEltEdit(elt);
+            elts = overlayElt.find('[lds-text-edit]');
+            _.findIndex(elts, function(e){
+              console.info(e);
+              return false;
+            });
+          }
+          if(e.keyCode === 13){ toggleEltEdit(elt); }     // Return
+        });
         editElt = elt;
         elt.addClass('edit');
         elt.html(input);
@@ -775,8 +801,10 @@
       KModel.loadFromSheet(Place, spreadsheetId, function(err, places){
         if(err) { console.error(err); }
 
-        mainTable = new Table($('#places'), Place.metadata, places);
+        var tableElt = $('#places');
+        mainTable = new Table(tableElt, Place.metadata, places);
         mainTable.display();
+        tableElt.resizableColumns();
 
         function newPlace(){
           overlay.setData(Place.metadata, null);
