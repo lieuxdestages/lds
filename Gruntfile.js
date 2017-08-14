@@ -74,8 +74,8 @@ module.exports = function(grunt){
             'css/lds-light.css',
             'img/**/*',
             'favicon.ico',
-            'jquery.resizableColumns.min.js',
-            'js/lds.js'
+            'js/store.legacy.min.js',
+            'js/jquery.resizableColumns.min.js'
           ]
         }]
       },
@@ -97,12 +97,12 @@ module.exports = function(grunt){
           sourceMap: true
         },
         files: {
-          'public/lds.js': 'js/lds.js'
+          'public/js/lds.js': 'js/lds.js'
         }
       },
       dist: {
         files: {
-          'docs/lds.js': 'js/*.js'
+          'docs/js/lds.js': 'js/*.js'
         }
       }
     },

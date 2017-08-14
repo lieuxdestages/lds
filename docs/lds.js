@@ -268,7 +268,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         gapi.client.sheets.spreadsheets.values.batchGet({
           'key': apiKey,
           'spreadsheetId': spreadsheetId,
-          'ranges': [KModel.getRange(model, null, 4), 'Avis!A2:E']
+          'ranges': [KModel.getRange(model), 'Avis!A2:E']
         }).then(function (res) {
           if (res && res.result && res.result.valueRanges) {
             var instance,

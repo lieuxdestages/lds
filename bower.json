@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "dependencies": {
     "font-awesome": "^4.7.0",
-    "jquery": "^3.2.1"
+    "jquery": "^3.2.1",
+    "store": "marcuswestin/store.js"
   },
   "devDependencies": {
     "async": "^2.4.1"
