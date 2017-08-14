@@ -10,6 +10,7 @@
     letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
   var myId = null,     // google user id for current user
+    usersList = null,
     mainTable,
     overlay;
 
@@ -198,8 +199,10 @@
     }
 
     static loadFromSheet(model, spreadsheetId, callback){
-      var instances = [];
-      console.info('Load from gsheet');
+      var instances = [],
+        ranges = [],
+        types = [model],
+        names = [null];
       if(!model){
         console.error('Missing model, unable to load data.');
         return [];
@@ -208,13 +211,20 @@
         console.error('Missing sheet name, unable to load data for:', model.name);
         return [];
       }
+      ranges.push(KModel.getRange(model));
+      _.forEach(model.metadata, function(meta){
+        var range;
+        if(meta.type){
+          range = KModel.getRange(meta.type);
+          ranges.push(range);
+          types.push(meta.type);
+          names.push(meta.array ? meta.array : meta.field);
+        }
+      });
       gapi.client.sheets.spreadsheets.values.batchGet({
         'key': apiKey,
         'spreadsheetId': spreadsheetId,
-        'ranges': [
-          KModel.getRange(model),
-          'Avis!A2:E'
-        ]
+        'ranges': ranges
       }).then(function(res) {
         if(res && res.result && res.result.valueRanges){
           var instance,
@@ -226,21 +236,53 @@
             instanceMap[row[9]] = instance;
             instances.push(instance);
           });
-          // opinions
-          _.forEach(res.result.valueRanges[1].values, function(row, idx){
-            var instance = instanceMap[row[2]],
-              opinion;
-            if(instance){
-              opinion = new Opinion();
-              opinion.setValuesFromRow(idx+2, row);
-              instance.setOpinion(opinion);
-            }
-          });
+          // sub elements
+          if(res.result.valueRanges[1]){
+            _.forEach(res.result.valueRanges[1].values, function(row, idx){
+              var instance = instanceMap[row[2]],
+                subElt;
+              if(instance){
+                subElt = new types[1]();
+                subElt.setValuesFromRow(idx+2, row);
+                instance['set' + names[1]](subElt);
+              }
+            });
+          }
         }
         callback(null, instances);
       });
     }
   }
+
+  class User extends KModel {
+    constructor(){
+      super(User);
+    }
+  }
+
+  User.type = User;
+  User.sheet = 'Users';
+  User.metadata = [
+    { field: 'id', col: 'A'},
+    { field: 'type', col: 'B'},
+    { field: 'name', col: 'C'}
+  ];
+
+  class Opinion extends KModel {
+    constructor(){
+      super(Opinion);
+    }
+  }
+
+  Opinion.type = Opinion;
+  Opinion.sheet = 'Avis';
+  Opinion.metadata = [
+    { field: 'userId', col: 'A'},
+    { field: 'date', col: 'B'},
+    { field: 'placeId', col: 'C'},
+    { field: 'rating', col: 'D'},
+    { field: 'comment', col: 'E'}
+  ];
 
   class Place extends KModel {
     constructor(){
@@ -336,23 +378,7 @@
     { field: 'type', headerName:'Type', col: 'H'},
     { field: 'email', col: 'I'}, //, headerName:'E-mail'
     { field: 'id', col: 'J'},
-    { field: 'opinions', array: 'Opinion'}
-  ];
-
-  class Opinion extends KModel {
-    constructor(){
-      super(Opinion);
-    }
-  }
-
-  Opinion.type = Opinion;
-  Opinion.sheet = 'Avis';
-  Opinion.metadata = [
-    { field: 'userId', col: 'A'},
-    { field: 'date', col: 'B'},
-    { field: 'placeId', col: 'C'},
-    { field: 'rating', col: 'D'},
-    { field: 'comment', col: 'E'},
+    { field: 'opinions', array: 'Opinion', type: Opinion}
   ];
 
   // # View
@@ -363,7 +389,8 @@
         model = null,                         // current data
         editElt = null,                         // current edition element
         originOpinion = null,              // Original user opinion
-        opinion = null;                        // user opinion
+        opinion = null,                        // user opinion
+        saving = false;
 
     $('#myrating').click(function(){
       edit('#myrating');
@@ -375,7 +402,7 @@
       toggleEltEdit($(evt.target));
       evt.stopPropagation();
     });
-    overlayElt.find('.alert .close').click(function(evt){
+    overlayElt.find('.alert .close').click(function(){
       overlayElt.find('.alert').slideUp();
     });
     overlayElt.click(function(){
@@ -414,19 +441,28 @@
         input = $('<input type="text" class="form-control"></input>');
         input.val(oldVal);
         input.keydown(function(e){
-          if(e.keyCode === 9){ e.preventDefault(); }    // Tab
+          // if(e.keyCode === 9){ e.preventDefault(); }    // Tab
         });
         input.keyup(function(e){
-          var elts;
+          var elts, idx;
           if(e.keyCode === 9){                                      // Tab
-            toggleEltEdit(elt);
-            elts = overlayElt.find('[lds-text-edit]');
-            _.findIndex(elts, function(e){
-              console.info(e);
-              return false;
-            });
+            // toggleEltEdit(elt);
+            // elts = overlayElt.find('[lds-text-edit]');
+            // idx = _.findIndex(elts, function(editElt){
+            //   return (elt[0] === editElt);
+            // }) + 1;
+            // if(idx > 0){
+            //   if(idx === elts.length) { idx = 0; }
+            //   console.info(idx, elts[idx]);
+            //   toggleEltEdit($(elts[idx]));
+            //   // e.preventDefault();
+            // }
           }
-          if(e.keyCode === 13){ toggleEltEdit(elt); }     // Return
+          // if(e.keyCode === 13){ toggleEltEdit(elt, field); }     // Return
+          else {
+            newVal = input.val();
+            model.set(field, newVal);
+          }
         });
         editElt = elt;
         elt.addClass('edit');
@@ -549,12 +585,23 @@
       list = overlayElt.find('.comments');
       list.empty();
       _.forEach(opinions, function(op){
-        var content,
+        var content, name,
           comment = op.get('comment');
+        _.find(usersList, function(u) {
+          if(u.get('id') === op.get('userId')){
+            name = u.get('name');
+            return true;
+          }
+        });
         if(comment && comment.length){
-          content = '<div class="comment"><div class="date">' +
+          content = '<div class="comment">' +
+            '<div class="date">' +
             moment(op.get('date')).format('Do MMMM YYYY') +
-            '</div><div class="text">' +
+            '</div>' +
+            '<div class="name">' +
+            name +
+            '</div>' +
+            '<div class="text">' +
             comment +
             '</div></div>';
           list.append(content);
@@ -568,6 +615,7 @@
 
     self.show = function(){
       overlayElt.addClass('enabled');
+      refreshButtons();
       // lock scroll
       $('body').css({'overflow':'hidden'});
       $(document).bind('scroll',function () {
@@ -578,6 +626,7 @@
     self.close = function(){
       overlayElt.find('.buttons .close').show();
       overlayElt.find('.buttons .btn').hide();
+      saving = false;
       if(editElt) { toggleEltEdit(editElt); }
       editElt = null;
       opinion = null;
@@ -587,6 +636,8 @@
     };
 
     self.save = function(){
+      saving = true;
+      refreshButtons();
       function saveModel(cb){
         if(model.eq(origin)){ return cb(); }
         model.save(null, function(){
@@ -633,11 +684,17 @@
     function refreshButtons(){
       var same = model.eq(origin),
         osame = opinion.eq(originOpinion);
-      if(same && osame){
+      if(saving){
         overlayElt.find('.buttons .btn').hide();
+        overlayElt.find('.buttons .close').hide();
+        overlayElt.find('.buttons .saving').show();
+      } else if(same && osame){
+        overlayElt.find('.buttons .btn').hide();
+        overlayElt.find('.buttons .saving').hide();
         overlayElt.find('.buttons .close').show();
       } else {
         overlayElt.find('.buttons .close').hide();
+        overlayElt.find('.buttons .saving').hide();
         overlayElt.find('.buttons .btn').show();
       }
     }
@@ -745,11 +802,43 @@
       myId = user.getId();
       navbar.find('.userimg').attr('src', profile.getImageUrl());
       navbar.find('.username').html(profile.getName());
+      updateUsersList(profile);
     } else {
       navbar.find('.lds-connect').show();
       $('.lds-needuser').hide();
+      myId = null;
       navbar.find('.userimg').attr('src', '');
       navbar.find('.username').html('');
+    }
+  }
+
+  // Create or updates current user info
+  function updateUsersList(profile){
+    var guser, user, name;
+    // if userList already loaded
+    if(usersList && myId){
+      if(!profile){
+        guser = gapi.auth2.getAuthInstance().currentUser.get();
+        profile = guser.getBasicProfile();
+      }
+      if(profile){
+        name = profile.getName();
+        user = _.find(usersList, function(u){ return u.get('id') === myId; });
+        if(!user){
+          user = new User();
+          user.set('id', myId);
+          user.set('type', 'Cuisine');
+          user.set('name', name);
+          user.save();
+          usersList.push(user);
+        } else {
+          // if name has changed
+          if(user.get('name') !== name){
+            user.set('name', name);
+            user.save();
+          }
+        }
+      }
     }
   }
 
@@ -798,29 +887,34 @@
   window.onload = function(){
 
     initGapi(function(){
-      KModel.loadFromSheet(Place, spreadsheetId, function(err, places){
+      KModel.loadFromSheet(User, spreadsheetId, function(err, users){
         if(err) { console.error(err); }
+        usersList = users;
+        updateUsersList();
+        KModel.loadFromSheet(Place, spreadsheetId, function(err, places){
+          if(err) { console.error(err); }
 
-        var tableElt = $('#places');
-        mainTable = new Table(tableElt, Place.metadata, places);
-        mainTable.display();
-        tableElt.resizableColumns();
+          var tableElt = $('#places');
+          mainTable = new Table(tableElt, Place.metadata, places);
+          mainTable.display();
+          tableElt.resizableColumns({ store: store });
 
-        function newPlace(){
-          overlay.setData(Place.metadata, null);
-          overlay.show();
-        }
+          function newPlace(){
+            overlay.setData(Place.metadata, null);
+            overlay.show();
+          }
 
-        overlay = new Overlay();
-        window.LDS = {
-          'closeOverlay': overlay.close,
-          'newPlace': newPlace,
-          'saveOverlay': overlay.save,
-          'signout': signout,
-          'signin': signin
-        };
+          overlay = new Overlay();
+          window.LDS = {
+            'closeOverlay': overlay.close,
+            'newPlace': newPlace,
+            'saveOverlay': overlay.save,
+            'signout': signout,
+            'signin': signin
+          };
 
-        loadingDone();
+          loadingDone();
+        });
       });
     });
   };
