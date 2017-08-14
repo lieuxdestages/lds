@@ -4,7 +4,8 @@
   "dependencies": {
     "font-awesome": "^4.7.0",
     "jquery": "^3.2.1",
-    "store": "marcuswestin/store.js"
+    "store": "marcuswestin/store.js",
+    "jquery-resizable-columns": "^0.2.3"
   },
   "devDependencies": {
     "async": "^2.4.1"
