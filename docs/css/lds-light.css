@@ -157,6 +157,10 @@ main #overlay .buttons {
 main #overlay .buttons .btn {
   display: none;
 }
+main #overlay .buttons .saving {
+  font-size: 100%;
+  display: none;
+}
 main #overlay .name {
   margin-top: 0px;
 }
@@ -186,8 +190,11 @@ main #overlay .comments {
 main #overlay .comments .comment {
   border-bottom: 1px dashed #A6E22E;
 }
+main #overlay .comments .comment .name {
+  font-size: 80%;
+}
 main #overlay .comments .comment .date {
-  text-align: right;
+  float: right;
   font-size: 80%;
 }
 main #overlay .comments .comment:last-child {

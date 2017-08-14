@@ -28,11 +28,31 @@
 @operator: #E7C547;
 @constant: #A37ACC;
 */
+/* --- Resizable columns --- */
+.rc-handle-container {
+  position: relative;
+}
+.rc-handle-container .rc-handle {
+  position: absolute;
+  width: 7px;
+  cursor: ew-resize;
+  margin-left: -3px;
+  z-index: 2;
+}
+table.rc-table-resizing {
+  cursor: ew-resize;
+}
+table.rc-table-resizing thead,
+table.rc-table-resizing thead > th,
+table.rc-table-resizing thead > th > a {
+  cursor: ew-resize;
+}
+/* --- /Resizable columns --- */
 body {
   font-family: 'Roboto', sans-serif;
-  color: #A6E22E;
-  margin: 0;
-  background: #282828;
+  color: #444;
+  margin: 0 12px;
+  background: white;
 }
 html {
   position: relative;
@@ -45,7 +65,7 @@ h2 {
   text-align: center;
   text-transform: uppercase;
   font-weight: bold;
-  color: #333;
+  color: #444;
   opacity: 0.9;
 }
 .lds-header {
@@ -59,7 +79,7 @@ h2 {
 }
 .lds-header .lds-brand span {
   margin: 12px 0;
-  color: #F8F8F0;
+  color: #444;
 }
 .lds-header .lds-brand .version {
   font-size: 60%;
@@ -68,12 +88,14 @@ h2 {
   text-align: right;
 }
 .lds-header button.btn.btn-lds {
-  color: #F8F8F2;
-  background: #49483E;
-  border-color: #888;
+  /*color: @light-ghost-white;
+    background: @brown-gray;
+    border-color: @gray;*/
   margin-top: 8px;
 }
-.lds-header .lds-connect {
+.lds-header .lds-connect,
+.lds-header .lds-addplace,
+.lds-header .lds-logout {
   display: none;
 }
 .lds-header .userimg {
@@ -84,45 +106,59 @@ h2 {
 .lds-header .username {
   display: inline-block;
 }
-main .table th,
 main .table thead {
-  color: #66D9EF;
-  border: 1px solid #75715E;
+  color: #F8F8F2;
+  background-color: #529B2F;
   cursor: pointer;
 }
-main .table th .sorted,
-main .table thead .sorted {
-  color: #AE81FF;
+main .table thead tr > th {
+  vertical-align: middle;
+  text-align: center;
+  border: 2px solid white;
 }
-main .table th .sorted:after,
+main .table thead tr > th:first-child {
+  border-top-left-radius: 12px;
+}
+main .table thead tr > th:last-child {
+  border-top-right-radius: 12px;
+}
+main .table thead .sorted {
+  color: #cfb4ff;
+}
 main .table thead .sorted:after {
   font-family: FontAwesome;
   content: "\f0d8";
   margin-left: 4px;
 }
-main .table th .sorted.desc:after,
 main .table thead .sorted.desc:after {
   font-family: FontAwesome;
   content: "\f0d7";
   margin-left: 4px;
 }
-main .table td {
-  border: 1px solid #75715E;
+main .table > tbody tr:nth-child(2n) {
+  background-color: #eff9ea;
 }
-main .table td.getComments > div {
+main .table > tbody tr:nth-child(2n+1) {
+  background-color: #fefffd;
+}
+main .table > tbody tr:hover {
+  color: #F92672;
+  background: #F8F8F2;
+}
+main .table > tbody tr td {
+  border: 2px solid white;
+  vertical-align: middle;
+}
+main .table > tbody tr td.getComments > div {
   max-height: 64px;
   overflow: hidden;
 }
-main .table td.getComments p {
+main .table > tbody tr td.getComments p {
   margin: 0;
   border-bottom: 1px dotted #888;
 }
-main .table td.getComments p:last-child {
+main .table > tbody tr td.getComments p:last-child {
   border-bottom: none;
-}
-main .table tbody tr:hover {
-  color: #F92672;
-  background: #49483E;
 }
 main #overlay {
   position: fixed;
@@ -131,12 +167,15 @@ main #overlay {
   right: 12px;
   bottom: 12px;
   padding: 12px;
-  background-color: #49483E;
+  background-color: #F8F8F2;
   border-radius: 1em;
   transform: translate3d(150%, 0, 0);
   -webkit-transition: -webkit-transform 500ms;
   transition: transform 500ms;
   min-height: 420px;
+}
+main #overlay .alert {
+  display: none;
 }
 main #overlay.enabled {
   transform: translate3d(0, 0, 0);
@@ -145,6 +184,10 @@ main #overlay .buttons {
   margin-bottom: 22px;
 }
 main #overlay .buttons .btn {
+  display: none;
+}
+main #overlay .buttons .saving {
+  font-size: 100%;
   display: none;
 }
 main #overlay .name {
@@ -161,14 +204,14 @@ main #overlay h2 {
 main #overlay #myrating,
 main #overlay #mycomment {
   cursor: pointer;
-  color: #66D9EF;
+  color: #75715E;
 }
 main #overlay #mycomment.edit {
   padding: 0;
 }
 main #overlay textarea.form-control {
-  background: #282828;
-  color: #FFD569;
+  background: #CCC;
+  color: #282828;
 }
 main #overlay .comments {
   color: #529B2F;
@@ -176,8 +219,11 @@ main #overlay .comments {
 main #overlay .comments .comment {
   border-bottom: 1px dashed #A6E22E;
 }
+main #overlay .comments .comment .name {
+  font-size: 80%;
+}
 main #overlay .comments .comment .date {
-  text-align: right;
+  float: right;
   font-size: 80%;
 }
 main #overlay .comments .comment:last-child {
@@ -203,14 +249,14 @@ main #overlay .comments .comment:last-child {
 }
 [lds-text-edit] {
   cursor: pointer;
-  border: 1px dotted #282828;
-  color: #66D9EF;
+  border: 1px dotted #CCC;
+  color: #75715E;
   min-height: 1.6em;
   padding: 4px 8px;
   border-radius: 4px;
 }
 [lds-text-edit]:hover {
-  background: #282828;
+  background: #CCC;
 }
 .edit {
   border: 1px solid #448;
@@ -218,8 +264,8 @@ main #overlay .comments .comment:last-child {
 }
 .edit input {
   padding: 4px;
-  background: #282828;
-  color: #FFD569;
+  background: #CCC;
+  color: #282828;
 }
 #myrating,
 #mycomment {

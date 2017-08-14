@@ -21,7 +21,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   var myId = null,
       // google user id for current user
-  mainTable,
+  usersList = null,
+      mainTable,
       overlay;
 
   var KModel = function () {
@@ -255,8 +256,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     }, {
       key: 'loadFromSheet',
       value: function loadFromSheet(model, spreadsheetId, callback) {
-        var instances = [];
-        console.info('Load from gsheet');
+        var instances = [],
+            ranges = [],
+            types = [model],
+            names = [null];
         if (!model) {
           console.error('Missing model, unable to load data.');
           return [];
@@ -265,10 +268,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           console.error('Missing sheet name, unable to load data for:', model.name);
           return [];
         }
+        ranges.push(KModel.getRange(model));
+        _.forEach(model.metadata, function (meta) {
+          var range;
+          if (meta.type) {
+            range = KModel.getRange(meta.type);
+            ranges.push(range);
+            types.push(meta.type);
+            names.push(meta.array ? meta.array : meta.field);
+          }
+        });
         gapi.client.sheets.spreadsheets.values.batchGet({
           'key': apiKey,
           'spreadsheetId': spreadsheetId,
-          'ranges': [KModel.getRange(model), 'Avis!A2:E']
+          'ranges': ranges
         }).then(function (res) {
           if (res && res.result && res.result.valueRanges) {
             var instance,
@@ -280,16 +293,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
               instanceMap[row[9]] = instance;
               instances.push(instance);
             });
-            // opinions
-            _.forEach(res.result.valueRanges[1].values, function (row, idx) {
-              var instance = instanceMap[row[2]],
-                  opinion;
-              if (instance) {
-                opinion = new Opinion();
-                opinion.setValuesFromRow(idx + 2, row);
-                instance.setOpinion(opinion);
-              }
-            });
+            // sub elements
+            if (res.result.valueRanges[1]) {
+              _.forEach(res.result.valueRanges[1].values, function (row, idx) {
+                var instance = instanceMap[row[2]],
+                    subElt;
+                if (instance) {
+                  subElt = new types[1]();
+                  subElt.setValuesFromRow(idx + 2, row);
+                  instance['set' + names[1]](subElt);
+                }
+              });
+            }
           }
           callback(null, instances);
         });
@@ -299,15 +314,47 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     return KModel;
   }();
 
-  var Place = function (_KModel) {
-    _inherits(Place, _KModel);
+  var User = function (_KModel) {
+    _inherits(User, _KModel);
+
+    function User() {
+      _classCallCheck(this, User);
+
+      return _possibleConstructorReturn(this, (User.__proto__ || Object.getPrototypeOf(User)).call(this, User));
+    }
+
+    return User;
+  }(KModel);
+
+  User.type = User;
+  User.sheet = 'Users';
+  User.metadata = [{ field: 'id', col: 'A' }, { field: 'type', col: 'B' }, { field: 'name', col: 'C' }];
+
+  var Opinion = function (_KModel2) {
+    _inherits(Opinion, _KModel2);
+
+    function Opinion() {
+      _classCallCheck(this, Opinion);
+
+      return _possibleConstructorReturn(this, (Opinion.__proto__ || Object.getPrototypeOf(Opinion)).call(this, Opinion));
+    }
+
+    return Opinion;
+  }(KModel);
+
+  Opinion.type = Opinion;
+  Opinion.sheet = 'Avis';
+  Opinion.metadata = [{ field: 'userId', col: 'A' }, { field: 'date', col: 'B' }, { field: 'placeId', col: 'C' }, { field: 'rating', col: 'D' }, { field: 'comment', col: 'E' }];
+
+  var Place = function (_KModel3) {
+    _inherits(Place, _KModel3);
 
     function Place() {
       _classCallCheck(this, Place);
 
-      var _this = _possibleConstructorReturn(this, (Place.__proto__ || Object.getPrototypeOf(Place)).call(this, Place));
+      var _this3 = _possibleConstructorReturn(this, (Place.__proto__ || Object.getPrototypeOf(Place)).call(this, Place));
 
-      var self = _this;
+      var self = _this3;
       self.rate = null; // Place's rate (average)
       self.rateCnt = 0; // Place's rate count
       self.commentCnt = 0; // Place's comments count
@@ -335,7 +382,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           return '<div>' + str + '</div>';
         }
       });
-      return _this;
+      return _this3;
     }
 
     _createClass(Place, [{
@@ -402,23 +449,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
   Place.metadata = [{ field: 'name', headerName: 'Nom', col: 'A' }, { field: 'location', headerName: 'Lieu', col: 'B' }, { field: 'address', col: 'C' }, // , headerName: 'Adresse'
   { field: 'getRate', headerName: 'Pertinence de l\'entreprise' }, { field: 'getRateCount', label: 'Nombre d\'avis' }, { field: 'getComments', headerName: 'Commentaires' }, { field: 'getCommentCount', label: 'Nombre de commentaires' }, { field: 'tutor', headerName: 'Tuteur', col: 'D' }, { field: 'cell', headerName: 'Portable', col: 'E' }, { field: 'phone', headerName: 'Fixe', col: 'F' }, { field: 'fax', col: 'G' }, // , headerName:'Fax'
   { field: 'type', headerName: 'Type', col: 'H' }, { field: 'email', col: 'I' }, //, headerName:'E-mail'
-  { field: 'id', col: 'J' }, { field: 'opinions', array: 'Opinion' }];
-
-  var Opinion = function (_KModel2) {
-    _inherits(Opinion, _KModel2);
-
-    function Opinion() {
-      _classCallCheck(this, Opinion);
-
-      return _possibleConstructorReturn(this, (Opinion.__proto__ || Object.getPrototypeOf(Opinion)).call(this, Opinion));
-    }
-
-    return Opinion;
-  }(KModel);
-
-  Opinion.type = Opinion;
-  Opinion.sheet = 'Avis';
-  Opinion.metadata = [{ field: 'userId', col: 'A' }, { field: 'date', col: 'B' }, { field: 'placeId', col: 'C' }, { field: 'rating', col: 'D' }, { field: 'comment', col: 'E' }];
+  { field: 'id', col: 'J' }, { field: 'opinions', array: 'Opinion', type: Opinion }];
 
   // # View
   function Overlay() {
@@ -432,7 +463,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         // current edition element
     originOpinion = null,
         // Original user opinion
-    opinion = null; // user opinion
+    opinion = null,
+        // user opinion
+    saving = false;
 
     $('#myrating').click(function () {
       edit('#myrating');
@@ -444,7 +477,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       toggleEltEdit($(evt.target));
       evt.stopPropagation();
     });
-    overlayElt.find('.alert .close').click(function (evt) {
+    overlayElt.find('.alert .close').click(function () {
       overlayElt.find('.alert').slideUp();
     });
     overlayElt.click(function () {
@@ -485,24 +518,28 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         input = $('<input type="text" class="form-control"></input>');
         input.val(oldVal);
         input.keydown(function (e) {
-          if (e.keyCode === 9) {
-            e.preventDefault();
-          } // Tab
+          // if(e.keyCode === 9){ e.preventDefault(); }    // Tab
         });
         input.keyup(function (e) {
-          var elts;
-          if (e.keyCode === 9) {
-            // Tab
-            toggleEltEdit(elt);
-            elts = overlayElt.find('[lds-text-edit]');
-            _.findIndex(elts, function (e) {
-              console.info(e);
-              return false;
-            });
-          }
-          if (e.keyCode === 13) {
-            toggleEltEdit(elt);
-          } // Return
+          var elts, idx;
+          if (e.keyCode === 9) {} // Tab
+          // toggleEltEdit(elt);
+          // elts = overlayElt.find('[lds-text-edit]');
+          // idx = _.findIndex(elts, function(editElt){
+          //   return (elt[0] === editElt);
+          // }) + 1;
+          // if(idx > 0){
+          //   if(idx === elts.length) { idx = 0; }
+          //   console.info(idx, elts[idx]);
+          //   toggleEltEdit($(elts[idx]));
+          //   // e.preventDefault();
+          // }
+
+          // if(e.keyCode === 13){ toggleEltEdit(elt, field); }     // Return
+          else {
+              newVal = input.val();
+              model.set(field, newVal);
+            }
         });
         editElt = elt;
         elt.addClass('edit');
@@ -630,9 +667,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       list.empty();
       _.forEach(opinions, function (op) {
         var content,
+            name,
             comment = op.get('comment');
+        _.find(usersList, function (u) {
+          if (u.get('id') === op.get('userId')) {
+            name = u.get('name');
+            return true;
+          }
+        });
         if (comment && comment.length) {
-          content = '<div class="comment"><div class="date">' + moment(op.get('date')).format('Do MMMM YYYY') + '</div><div class="text">' + comment + '</div></div>';
+          content = '<div class="comment">' + '<div class="date">' + moment(op.get('date')).format('Do MMMM YYYY') + '</div>' + '<div class="name">' + name + '</div>' + '<div class="text">' + comment + '</div></div>';
           list.append(content);
         }
       });
@@ -644,6 +688,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     self.show = function () {
       overlayElt.addClass('enabled');
+      refreshButtons();
       // lock scroll
       $('body').css({ 'overflow': 'hidden' });
       $(document).bind('scroll', function () {
@@ -654,6 +699,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     self.close = function () {
       overlayElt.find('.buttons .close').show();
       overlayElt.find('.buttons .btn').hide();
+      saving = false;
       if (editElt) {
         toggleEltEdit(editElt);
       }
@@ -665,6 +711,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     };
 
     self.save = function () {
+      saving = true;
+      refreshButtons();
       function saveModel(cb) {
         if (model.eq(origin)) {
           return cb();
@@ -717,11 +765,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     function refreshButtons() {
       var same = model.eq(origin),
           osame = opinion.eq(originOpinion);
-      if (same && osame) {
+      if (saving) {
         overlayElt.find('.buttons .btn').hide();
+        overlayElt.find('.buttons .close').hide();
+        overlayElt.find('.buttons .saving').show();
+      } else if (same && osame) {
+        overlayElt.find('.buttons .btn').hide();
+        overlayElt.find('.buttons .saving').hide();
         overlayElt.find('.buttons .close').show();
       } else {
         overlayElt.find('.buttons .close').hide();
+        overlayElt.find('.buttons .saving').hide();
         overlayElt.find('.buttons .btn').show();
       }
     }
@@ -844,11 +898,45 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       myId = user.getId();
       navbar.find('.userimg').attr('src', profile.getImageUrl());
       navbar.find('.username').html(profile.getName());
+      updateUsersList(profile);
     } else {
       navbar.find('.lds-connect').show();
       $('.lds-needuser').hide();
+      myId = null;
       navbar.find('.userimg').attr('src', '');
       navbar.find('.username').html('');
+    }
+  }
+
+  // Create or updates current user info
+  function updateUsersList(profile) {
+    var guser, user, name;
+    // if userList already loaded
+    if (usersList && myId) {
+      if (!profile) {
+        guser = gapi.auth2.getAuthInstance().currentUser.get();
+        profile = guser.getBasicProfile();
+      }
+      if (profile) {
+        name = profile.getName();
+        user = _.find(usersList, function (u) {
+          return u.get('id') === myId;
+        });
+        if (!user) {
+          user = new User();
+          user.set('id', myId);
+          user.set('type', 'Cuisine');
+          user.set('name', name);
+          user.save();
+          usersList.push(user);
+        } else {
+          // if name has changed
+          if (user.get('name') !== name) {
+            user.set('name', name);
+            user.save();
+          }
+        }
+      }
     }
   }
 
@@ -898,31 +986,38 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
   window.onload = function () {
 
     initGapi(function () {
-      KModel.loadFromSheet(Place, spreadsheetId, function (err, places) {
+      KModel.loadFromSheet(User, spreadsheetId, function (err, users) {
         if (err) {
           console.error(err);
         }
+        usersList = users;
+        updateUsersList();
+        KModel.loadFromSheet(Place, spreadsheetId, function (err, places) {
+          if (err) {
+            console.error(err);
+          }
 
-        var tableElt = $('#places');
-        mainTable = new Table(tableElt, Place.metadata, places);
-        mainTable.display();
-        tableElt.resizableColumns();
+          var tableElt = $('#places');
+          mainTable = new Table(tableElt, Place.metadata, places);
+          mainTable.display();
+          tableElt.resizableColumns({ store: store });
 
-        function newPlace() {
-          overlay.setData(Place.metadata, null);
-          overlay.show();
-        }
+          function newPlace() {
+            overlay.setData(Place.metadata, null);
+            overlay.show();
+          }
 
-        overlay = new Overlay();
-        window.LDS = {
-          'closeOverlay': overlay.close,
-          'newPlace': newPlace,
-          'saveOverlay': overlay.save,
-          'signout': signout,
-          'signin': signin
-        };
+          overlay = new Overlay();
+          window.LDS = {
+            'closeOverlay': overlay.close,
+            'newPlace': newPlace,
+            'saveOverlay': overlay.save,
+            'signout': signout,
+            'signin': signin
+          };
 
-        loadingDone();
+          loadingDone();
+        });
       });
     });
   };
