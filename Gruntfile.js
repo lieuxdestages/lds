@@ -83,7 +83,7 @@ module.exports = function(grunt){
         src: 'index.html', dest: 'docs/index.html',
         options: {
           process: function (content) {
-            return content.replace(/%BASE_PATH%/g, 'https://gbourel.github.io/lds');
+            return content.replace(/%BASE_PATH%/g, 'https://lieuxdestages.github.io/lds');
           }
         }
       }
