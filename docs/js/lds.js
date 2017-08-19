@@ -657,10 +657,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         opinion.set('userId', myId);
         opinion.set('date', new Date());
         opinion.set('placeId', model.get('id'));
+        originOpinion = opinion.clone();
       }
       _.forEach(keys, function (key) {
         var val = model.get(key.field) || key.headerName;
-        overlayElt.find('.' + key.field).html(val);
+        overlayElt.find('.' + key.field).html(_.isUndefined(val) ? '' : val);
       });
       opinions = model.get('opinions');
       list = overlayElt.find('.comments');

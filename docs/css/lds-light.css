@@ -133,7 +133,7 @@ main .table > tbody tr td.getComments p:last-child {
 }
 main #overlay {
   position: fixed;
-  top: 52px;
+  top: 12px;
   left: 12px;
   right: 12px;
   bottom: 12px;
@@ -184,20 +184,23 @@ main #overlay textarea.form-control {
   background: #CCC;
   color: #282828;
 }
-main #overlay .comments {
+main #overlay .opinions-list {
+  color: #11006B;
+}
+main #overlay .opinions-list .comments {
   color: #529B2F;
 }
-main #overlay .comments .comment {
+main #overlay .opinions-list .comments .comment {
   border-bottom: 1px dashed #A6E22E;
 }
-main #overlay .comments .comment .name {
+main #overlay .opinions-list .comments .comment .name {
   font-size: 80%;
 }
-main #overlay .comments .comment .date {
+main #overlay .opinions-list .comments .comment .date {
   float: right;
   font-size: 80%;
 }
-main #overlay .comments .comment:last-child {
+main #overlay .opinions-list .comments .comment:last-child {
   border-bottom: none;
 }
 .footer {

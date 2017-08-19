@@ -208,23 +208,26 @@ main {
       color: @dark-gray;
     }
 
-    .comments {
-      color: @sea-green;
-      .comment {
-        border-bottom: 1px dashed @green;
-        .name {
-          font-size: 80%;
-        }
-        .date {
-          float: right;
-          font-size: 80%;
-        }
-        &:last-child {
-          border-bottom: none;
+    .opinions-list {
+      color: @dark-blue;
+      .comments {
+        color: @sea-green;
+        .comment {
+          border-bottom: 1px dashed @green;
+          .name {
+            font-size: 80%;
+          }
+          .date {
+            float: right;
+            font-size: 80%;
+          }
+          &:last-child {
+            border-bottom: none;
+          }
         }
       }
     }
-  }
+    }
 }
 
 .footer {
