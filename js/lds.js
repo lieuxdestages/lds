@@ -830,15 +830,28 @@
           user.set('id', myId);
           user.set('type', 'Cuisine');
           user.set('name', name);
-          user.save();
           usersList.push(user);
         } else {
           // if name has changed
           if(user.get('name') !== name){
             user.set('name', name);
-            user.save();
           }
         }
+        user.save(function(err){
+          var body;
+          if(err && err.body){
+            body = JSON.parse(err.body);
+            if(body.error && body.error.code === 403){
+              $('#main-alert').slideDown();
+              $('#main-alert button.close').click(function(){
+                $('#main-alert').slideUp();
+                $('#main-alert .alert-content').html('');
+              });
+              $('#main-alert .alert-content').html('Le compte ' + name + ' n\'est pas autorisé à modifier la liste. Demander à Mme Labrousse pour y avoir accès.');
+              signout();
+            }
+          }
+        });
       }
     }
   }
