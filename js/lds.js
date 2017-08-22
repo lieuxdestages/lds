@@ -746,10 +746,12 @@
 
     display(){
       var self = this,
+        firstColumn = null,
         header = $('<thead></thead>'),
         row = $('<tr></tr>');
       _.forEach(this.columns, function(column){
         var th;
+        if(!firstColumn) { firstColumn = column; }
         if(column.headerName && column.visible !== false){
           th = $('<th class="h-column-' +column.field + '">' + column.headerName + '</th>');
           th.click(function(){
@@ -760,7 +762,7 @@
       });
       header.append(row);
       this._parentTable.html(header);
-      this.refresh();
+      this.orderBy(firstColumn);
     }
 
 
