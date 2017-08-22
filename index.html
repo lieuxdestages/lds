@@ -41,9 +41,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="%BASE_PATH%/css/lds-light.css" title="light">
-    <meta http-equiv="Default-Style" content="light">
-    <!-- <link rel="stylesheet" href="//css/lds.css" title="dark"> -->
+    <!-- <link rel="stylesheet" href="%BASE_PATH%/css/lds.css" title="dark"> -->
     <link rel="stylesheet" href="%BASE_PATH%/css/lds-light.css" title="light">
   </head>
   <body class="lds">
@@ -102,7 +100,7 @@
           </i> en cours</span>
           <button class="close pull-right" onclick="LDS.closeOverlay()"><i class="fa fa-close"></i></button>
         </div>
-        <div class="type text-center" lds-text-edit="type">Type (ex. "restaurant")</div>
+        <div class="type text-center" lds-select-edit="type">Type (ex. "restaurant")</div>
         <h2 class="name" lds-text-edit="name">Nom</h2>
         <div class="col-sm-4"> <!-- Global params -->
           <div class="row">
@@ -110,7 +108,7 @@
               <p>Lieu</p>
             </div>
             <div class="col-xs-8">
-              <p class="location" lds-text-edit="location"></p>
+              <p class="location" lds-select-edit="location"></p>
             </div>
           </div>
           <div class="row">

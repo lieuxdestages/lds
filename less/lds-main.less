@@ -24,7 +24,7 @@ body {
   font-family: 'Roboto', sans-serif;
   color: #444;
   margin: 0 12px;
-  background: white;
+  background: @background-color;
 }
 
 html {
@@ -255,7 +255,7 @@ main {
   margin: -32px -32px;
 }
 
-[lds-text-edit] {
+[lds-text-edit], [lds-select-edit] {
   cursor: pointer;
   border: 1px dotted @light-gray;
   color: @brown;
@@ -266,6 +266,9 @@ main {
   &:hover {
     background: @light-gray;
   }
+}
+[lds-select-edit] select {
+  width: 100%;
 }
 .edit {
   border: 1px solid #448;
