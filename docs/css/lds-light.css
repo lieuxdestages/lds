@@ -224,7 +224,8 @@ main #overlay .opinions-list .comments .comment:last-child {
   font-size: 64px;
   margin: -32px -32px;
 }
-[lds-text-edit] {
+[lds-text-edit],
+[lds-select-edit] {
   cursor: pointer;
   border: 1px dotted #CCC;
   color: #75715E;
@@ -232,8 +233,12 @@ main #overlay .opinions-list .comments .comment:last-child {
   padding: 4px 8px;
   border-radius: 4px;
 }
-[lds-text-edit]:hover {
+[lds-text-edit]:hover,
+[lds-select-edit]:hover {
   background: #CCC;
+}
+[lds-select-edit] select {
+  width: 100%;
 }
 .edit {
   border: 1px solid #448;

@@ -446,9 +446,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   Place.type = Place;
   Place.sheet = 'Lieux';
-  Place.metadata = [{ field: 'name', headerName: 'Nom', col: 'A' }, { field: 'location', headerName: 'Lieu', col: 'B' }, { field: 'address', col: 'C' }, // , headerName: 'Adresse'
+  Place.metadata = [{ field: 'name', headerName: 'Nom', col: 'A' }, { field: 'location', headerName: 'Lieu', col: 'B',
+    values: ['', 'Centre', 'Mamoudzou', 'Nord', 'Petite-Terre', 'Sud'] }, { field: 'address', col: 'C' }, // , headerName: 'Adresse'
   { field: 'getRate', headerName: 'Pertinence de l\'entreprise' }, { field: 'getRateCount', label: 'Nombre d\'avis' }, { field: 'getComments', headerName: 'Commentaires' }, { field: 'getCommentCount', label: 'Nombre de commentaires' }, { field: 'tutor', headerName: 'Tuteur', col: 'D' }, { field: 'cell', headerName: 'Portable', col: 'E' }, { field: 'phone', headerName: 'Fixe', col: 'F' }, { field: 'fax', col: 'G' }, // , headerName:'Fax'
-  { field: 'type', headerName: 'Type', col: 'H' }, { field: 'email', col: 'I' }, //, headerName:'E-mail'
+  { field: 'type', headerName: 'Type', col: 'H',
+    values: ['', 'Boulangerie', 'Restaurant', 'Traiteur'] }, { field: 'email', col: 'I' }, //, headerName:'E-mail'
   { field: 'id', col: 'J' }, { field: 'opinions', array: 'Opinion', type: Opinion }];
 
   // # View
@@ -473,7 +475,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     $('#mycomment').click(function () {
       edit('#mycomment');
     });
-    overlayElt.find('[lds-text-edit]').click(function (evt) {
+    overlayElt.find('[lds-text-edit], [lds-select-edit]').click(function (evt) {
       toggleEltEdit($(evt.target));
       evt.stopPropagation();
     });
@@ -489,7 +491,56 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }
     });
 
-    function toggleTextEdit(elt, field) {
+    function buildTextInput(model, field) {
+      var input = $('<input type="text" class="form-control"></input>');
+      input.val(model.get(field));
+      input.keydown(function () {
+        // if(e.keyCode === 9){ e.preventDefault(); }    // Tab
+      });
+      input.keyup(function () {
+        // var elts, idx;
+        // if(e.keyCode === 9){                                      // Tab
+        // toggleEltEdit(elt);
+        // elts = overlayElt.find('[lds-text-edit]');
+        // idx = _.findIndex(elts, function(editElt){
+        //   return (elt[0] === editElt);
+        // }) + 1;
+        // if(idx > 0){
+        //   if(idx === elts.length) { idx = 0; }
+        //   console.info(idx, elts[idx]);
+        //   toggleEltEdit($(elts[idx]));
+        //   // e.preventDefault();
+        // }
+        // }
+        // if(e.keyCode === 13){ toggleEltEdit(elt, field); }     // Return
+        // else {
+        var newVal = input.val();
+        model.set(field, newVal);
+        // }
+      });
+      // }
+      return input;
+    }
+
+    function buildSelectInput(model, field) {
+      var input = null,
+          meta = _.find(model.metadata, function (m) {
+        return m.field === field;
+      });
+      if (meta.values) {
+        input = $('<select id="' + field + '"></select>');
+        _.forEach(meta.values, function (value) {
+          $('<option value="' + value + '">' + value + '</option>').appendTo(input);
+        });
+        input.val(model.get(field));
+        input.change(function () {
+          model.set(field, input.val());
+        });
+      }
+      return input;
+    }
+
+    function toggleEdit(inputFactory, elt, field) {
       if (!myId) {
         overlayElt.find('.alert').slideDown();
         setTimeout(function () {
@@ -502,7 +553,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           input,
           last;
       if (elt.hasClass('edit')) {
-        input = elt.find('input');
+        input = elt.find('input, select');
         newVal = input.val();
         if (newVal !== oldVal) {
           model.set(field, newVal);
@@ -515,32 +566,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           editElt = null;
           toggleEltEdit(last);
         }
-        input = $('<input type="text" class="form-control"></input>');
-        input.val(oldVal);
-        input.keydown(function (e) {
-          // if(e.keyCode === 9){ e.preventDefault(); }    // Tab
-        });
-        input.keyup(function (e) {
-          var elts, idx;
-          if (e.keyCode === 9) {} // Tab
-          // toggleEltEdit(elt);
-          // elts = overlayElt.find('[lds-text-edit]');
-          // idx = _.findIndex(elts, function(editElt){
-          //   return (elt[0] === editElt);
-          // }) + 1;
-          // if(idx > 0){
-          //   if(idx === elts.length) { idx = 0; }
-          //   console.info(idx, elts[idx]);
-          //   toggleEltEdit($(elts[idx]));
-          //   // e.preventDefault();
-          // }
-
-          // if(e.keyCode === 13){ toggleEltEdit(elt, field); }     // Return
-          else {
-              newVal = input.val();
-              model.set(field, newVal);
-            }
-        });
+        input = inputFactory(model, field);
         editElt = elt;
         elt.addClass('edit');
         elt.html(input);
@@ -572,10 +598,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         return;
       }
       var field = elt.attr('lds-text-edit'),
+          select = elt.attr('lds-select-edit'),
           last;
 
       if (field) {
-        toggleTextEdit(elt, field);
+        toggleEdit(buildTextInput, elt, field);
+      } else if (select) {
+        toggleEdit(buildSelectInput, elt, select);
       } else {
         var closeElt = void 0,
             content = void 0;
@@ -832,10 +861,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       key: 'display',
       value: function display() {
         var self = this,
+            firstColumn = null,
             header = $('<thead></thead>'),
             row = $('<tr></tr>');
         _.forEach(this.columns, function (column) {
           var th;
+          if (!firstColumn) {
+            firstColumn = column;
+          }
           if (column.headerName && column.visible !== false) {
             th = $('<th class="h-column-' + column.field + '">' + column.headerName + '</th>');
             th.click(function () {
@@ -846,7 +879,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         });
         header.append(row);
         this._parentTable.html(header);
-        this.refresh();
+        this.orderBy(firstColumn);
       }
     }, {
       key: 'refresh',
