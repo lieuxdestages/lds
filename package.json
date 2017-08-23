@@ -17,6 +17,7 @@
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-less": "^1.4.1",
     "grunt-contrib-watch": "^1.0.0",
+    "grunt-md5": "^0.1.12",
     "grunt-shell": "^2.1.0",
     "grunt-usage": "^1.1.1",
     "jspm": "^0.16.53",

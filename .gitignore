@@ -13,3 +13,6 @@ public/css/lds-light.css.map
 public/index.html
 public/js/constants.js
 dist/constants.js
+
+# JSPM build temp dir
+/tmp

@@ -99,11 +99,22 @@ module.exports = function(grunt){
         }
       }
     },
+    md5: {
+      bundle: {
+        files: {
+          'docs/js/': 'tmp/*.js'
+        },
+        options: {
+          keepBasename: true,
+          keepExtension: true
+        }
+      }
+    },
     shell: {
       bundle: {
         command: [
-          'jspm bundle js/lds.js - jquery - moment docs/js/lds.js --minify --skip-source-maps',
-          'jspm bundle jquery + moment docs/js/libs.js --minify --skip-source-maps'
+          'jspm bundle js/lds.js - jquery - moment tmp/lds.js --minify --skip-source-maps',
+          'jspm bundle jquery + moment tmp/libs.js --minify --skip-source-maps'
         ].join('&&')
       }
     },
@@ -145,7 +156,7 @@ module.exports = function(grunt){
     }
   });
 
-  grunt.registerTask('release', ['less', 'cssmin', 'copy:config_dist', 'shell:bundle', 'copy:dist', 'copy:distIndex']);
+  grunt.registerTask('release', ['less', 'cssmin', 'copy:config_dist', 'shell:bundle', 'copy:dist', 'copy:distIndex', 'md5']);
   grunt.registerTask('dev', ['less', 'copy:config_dev', 'copy:dev', 'connect:local', 'watch']);
   grunt.registerTask('default', ['usage']);
 };
