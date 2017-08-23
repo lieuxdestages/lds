@@ -10,7 +10,6 @@ export var googleAuth = {
     gapi.auth2.getAuthInstance().signOut();
   },
   init: function(updateSigninStatusCb, callback) {
-    console.info('here', typeof(gapi));
     gapi.load('client:auth2', function () {
       // Initialize the client with API key and People API, and initialize OAuth with an
       // OAuth 2.0 client ID and scopes (space delimited string) to request access.
