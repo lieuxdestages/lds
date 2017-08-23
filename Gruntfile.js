@@ -5,6 +5,7 @@ module.exports = function(grunt){
   require('load-grunt-tasks')(grunt);
 
   var baseUrl = 'https://lieuxdestages.github.io/lds';
+    md5Filenames = {};
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -93,7 +94,9 @@ module.exports = function(grunt){
         options: {
           process: function (content) {
             content = content.replace(/%BASE_PATH%/g, baseUrl);
-            content = content.replace(/%DEPENDENCIES%/g, '<script src="' + baseUrl + '/js/libs.js"></script>\n    <script src="' + baseUrl + '/js/lds.js"></script>');
+            content = content.replace(/%DEPENDENCIES%/g,
+                '<script src="' + baseUrl + '/js/'+ md5Filenames['libs.js'] +'"></script>\n' +
+                '    <script src="' + baseUrl + '/js/' + md5Filenames['lds.js'] + '"></script>');
             return content;
           }
         }
@@ -106,7 +109,12 @@ module.exports = function(grunt){
         },
         options: {
           keepBasename: true,
-          keepExtension: true
+          keepExtension: true,
+          afterEach: function (fileChange) {
+            var oldName = fileChange.oldPath.substring(fileChange.oldPath.lastIndexOf('/')+1);
+            var newName = fileChange.newPath.substring(fileChange.newPath.lastIndexOf('/')+1);
+            md5Filenames[oldName] = newName;
+          }
         }
       }
     },
@@ -156,7 +164,7 @@ module.exports = function(grunt){
     }
   });
 
-  grunt.registerTask('release', ['less', 'cssmin', 'copy:config_dist', 'shell:bundle', 'copy:dist', 'copy:distIndex', 'md5']);
+  grunt.registerTask('release', ['less', 'cssmin', 'copy:config_dist', 'shell:bundle', 'copy:dist', 'md5', 'copy:distIndex']);
   grunt.registerTask('dev', ['less', 'copy:config_dev', 'copy:dev', 'connect:local', 'watch']);
   grunt.registerTask('default', ['usage']);
 };
