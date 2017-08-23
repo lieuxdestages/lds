@@ -66,7 +66,7 @@ module.exports = function(grunt){
         options: {
           process: function (content) {
             content = content.replace(/%BASE_PATH%/g, '');
-            content = content.replace(/%DEPENDENCIES%/g, '');
+            content = content.replace(/%DEPENDENCIES%/g, '<script src="config.js"></script>');
             return content;
           }
         }
@@ -84,8 +84,7 @@ module.exports = function(grunt){
             'css/lds-light.css',
             'img/**/*',
             'favicon.ico',
-            'js/store.legacy.min.js',
-            'js/jquery.resizableColumns.min.js'
+            'lib/system.js'
           ]
         }]
       },

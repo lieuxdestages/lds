@@ -305,13 +305,11 @@ export function Overlay() {
         console.info('Opinion saved');
         if(originOpinion){
           originOpinion.setValuesFromModel(opinion);
-        } else {
-          // Add new opinion to place
-          if(origin){
-            origin.setOpinion(opinion);
-          }
         }
-        if(origin){ origin.refresh(); }
+        if(origin){
+          origin.setOpinion(opinion);
+          origin.refresh();     // Compute new avg rate
+        }
         cb();
       });
     }
