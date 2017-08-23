@@ -1,5 +1,5 @@
 
-import {config} from './config.js';
+import {constants} from '../constants.js';
 
 export var googleAuth = {
   myId: null,
@@ -15,9 +15,9 @@ export var googleAuth = {
       // Initialize the client with API key and People API, and initialize OAuth with an
       // OAuth 2.0 client ID and scopes (space delimited string) to request access.
       gapi.client.init({
-          'discoveryDocs': config.discoveryDocs,
-          'clientId': config.clientId,
-          'scope': config.scopes
+          'discoveryDocs': constants.discoveryDocs,
+          'clientId': constants.clientId,
+          'scope': constants.scopes
       }).then(function () {
         // Listen for sign-in state changes.
         gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatusCb);

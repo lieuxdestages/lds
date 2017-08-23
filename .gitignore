@@ -1,5 +1,7 @@
+# Dependencies (node, bower, jspm)
 node_modules/
 bower_components/
+public/lib/
 
 # Generated from less
 public/css/lds.css
@@ -9,3 +11,5 @@ public/css/lds-light.css.map
 
 # Conf on copy
 public/index.html
+public/js/constants.js
+dist/constants.js

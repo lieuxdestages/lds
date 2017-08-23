@@ -4,6 +4,8 @@ module.exports = function(grunt){
 
   require('load-grunt-tasks')(grunt);
 
+  var baseUrl = 'https://lieuxdestages.github.io/lds';
+
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     jshint: {
@@ -56,13 +58,21 @@ module.exports = function(grunt){
       }
     },
     copy: {
+      config_dev: {
+        src: 'js/dev-constants.js', dest: 'public/js/constants.js'
+      },
       dev: {
         src: 'index.html', dest: 'public/index.html',
         options: {
           process: function (content) {
-            return content.replace(/%BASE_PATH%/g, '');
+            content = content.replace(/%BASE_PATH%/g, '');
+            content = content.replace(/%DEPENDENCIES%/g, '');
+            return content;
           }
         }
+      },
+      config_dist: {
+        src: 'js/prod-constants.js', dest: 'public/js/constants.js'
       },
       dist: {
         files: [{
@@ -83,35 +93,19 @@ module.exports = function(grunt){
         src: 'index.html', dest: 'docs/index.html',
         options: {
           process: function (content) {
-            return content.replace(/%BASE_PATH%/g, 'https://lieuxdestages.github.io/lds');
+            content = content.replace(/%BASE_PATH%/g, baseUrl);
+            content = content.replace(/%DEPENDENCIES%/g, '<script src="' + baseUrl + '/js/libs.js"></script>\n    <script src="' + baseUrl + '/js/lds.js"></script>');
+            return content;
           }
         }
       }
     },
-    babel: {
-      options: {
-        presets: ['es2015']
-      },
-      dev: {
-        options: {
-          sourceMap: true
-        },
-        files: {
-          'public/js/lds.js': 'js/lds.js'
-        }
-      },
-      dist: {
-        files: {
-          'docs/js/lds.js': 'js/*.js'
-        }
-      }
-    },
-    uglify: {
-      options: {
-        mangle: false,
-        compress: {
-          drop_console: true
-        }
+    shell: {
+      bundle: {
+        command: [
+          'jspm bundle js/lds.js - jquery - moment docs/js/lds.js --minify --skip-source-maps',
+          'jspm bundle jquery + moment docs/js/libs.js --minify --skip-source-maps'
+        ].join('&&')
       }
     },
     usage: {
@@ -152,7 +146,7 @@ module.exports = function(grunt){
     }
   });
 
-  grunt.registerTask('release', ['less', 'cssmin', 'babel:dist', 'copy:dist', 'copy:distIndex']);
-  grunt.registerTask('dev', ['less', 'connect:local', 'copy:dev', 'watch']);
+  grunt.registerTask('release', ['less', 'cssmin', 'copy:config_dist', 'shell:bundle', 'copy:dist', 'copy:distIndex']);
+  grunt.registerTask('dev', ['less', 'copy:config_dev', 'copy:dev', 'connect:local', 'watch']);
   grunt.registerTask('default', ['usage']);
 };

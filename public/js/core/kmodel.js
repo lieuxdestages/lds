@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {config} from './config.js';
+import {constants} from '../constants.js';
 import {googleAuth} from './googleAuth.js';
 
 
@@ -110,7 +110,7 @@ export class KModel {
     if(self._rowIdx){
       range = self.sheet + '!' + first + self._rowIdx + ':' + last + self._rowIdx;
       gapi.client.sheets.spreadsheets.values.update({
-        'spreadsheetId': config.spreadsheetId,
+        'spreadsheetId': constants.spreadsheetId,
         'range': range,
         'valueInputOption': 'RAW'
       }, {
@@ -125,7 +125,7 @@ export class KModel {
     } else {
       range = self.sheet + '!' + first + '1:' + last + '1';
       gapi.client.sheets.spreadsheets.values.append({
-        'spreadsheetId': config.spreadsheetId,
+        'spreadsheetId': constants.spreadsheetId,
         'range': range,
         'valueInputOption': 'RAW',
         'insertDataOption': 'INSERT_ROWS'
@@ -144,7 +144,7 @@ export class KModel {
   _logSave(content, err, cb){
     var self = this;
     gapi.client.sheets.spreadsheets.values.append({
-      'spreadsheetId': config.spreadsheetId,
+      'spreadsheetId': constants.spreadsheetId,
       'range': 'Log!A1:D1',
       'valueInputOption': 'RAW',
       'insertDataOption': 'INSERT_ROWS'
@@ -213,7 +213,7 @@ export class KModel {
       }
     });
     gapi.client.sheets.spreadsheets.values.batchGet({
-      'key': config.apiKey,
+      'key': constants.apiKey,
       'spreadsheetId': spreadsheetId,
       'ranges': ranges
     }).then(function(res) {

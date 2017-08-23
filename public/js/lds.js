@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import _ from 'lodash';
 
-import {config} from './config.js';
+import {constants} from './constants.js';
 import {googleAuth} from './core/googleAuth.js';
 import {KModel} from './core/kmodel.js';
 import {User} from './model/user.js';
@@ -34,20 +34,20 @@ function updateSigninStatus(isSignedIn) {
 function updateUsersList(profile){
   var guser, user, name;
   // if userList already loaded
-  if(config.usersList && googleAuth.myId){
+  if(constants.usersList && googleAuth.myId){
     if(!profile){
       guser = gapi.auth2.getAuthInstance().currentUser.get();
       profile = guser.getBasicProfile();
     }
     if(profile){
       name = profile.getName();
-      user = _.find(config.usersList, function(u){ return u.get('id') === googleAuth.myId; });
+      user = _.find(constants.usersList, function(u){ return u.get('id') === googleAuth.myId; });
       if(!user){
         user = new User();
         user.set('id', googleAuth.myId);
         user.set('type', 'Cuisine');
         user.set('name', name);
-        config.usersList.push(user);
+        constants.usersList.push(user);
       } else {
         // if name has changed
         if(user.get('name') !== name){
@@ -80,28 +80,28 @@ function loadingDone(){
 
 window.onload = function(){
   googleAuth.init(updateSigninStatus, function(){
-    KModel.loadFromSheet(User, config.spreadsheetId, function(err, users){
+    KModel.loadFromSheet(User, constants.spreadsheetId, function(err, users){
       if(err) { console.error(err); }
-      config.usersList = users;
+      constants.usersList = users;
       updateUsersList();
-      KModel.loadFromSheet(Place, config.spreadsheetId, function(err, places){
+      KModel.loadFromSheet(Place, constants.spreadsheetId, function(err, places){
         if(err) { console.error(err); }
 
         var tableElt = $('#places');
-        config.mainTable = new Table(tableElt, Place.metadata, places);
-        config.mainTable.display();
+        constants.mainTable = new Table(tableElt, Place.metadata, places);
+        constants.mainTable.display();
         // tableElt.resizableColumns({ store: store });
 
         function newPlace(){
-          config.overlay.setData(Place.metadata, null);
-          config.overlay.show();
+          constants.overlay.setData(Place.metadata, null);
+          constants.overlay.show();
         }
 
-        config.overlay = new Overlay();
+        constants.overlay = new Overlay();
         window.LDS = {
-          'closeOverlay': config.overlay.close,
+          'closeOverlay': constants.overlay.close,
           'newPlace': newPlace,
-          'saveOverlay': config.overlay.save,
+          'saveOverlay': constants.overlay.save,
           'signout': googleAuth.signout,
           'signin': googleAuth.signin
         };

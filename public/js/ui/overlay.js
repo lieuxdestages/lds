@@ -3,8 +3,8 @@ import $ from 'jquery';
 import moment from 'moment';
 import 'moment/locale/fr';
 
-import {config} from '../config.js';
-import {googleAuth} from '../googleAuth.js';
+import {constants} from '../constants.js';
+import {googleAuth} from '../core/googleAuth.js';
 import {Opinion} from '../model/opinion.js';
 import {Place} from '../model/place.js';
 
@@ -238,7 +238,7 @@ export function Overlay() {
     _.forEach(opinions, function(op){
       var content, name,
         comment = op.get('comment');
-      _.find(config.usersList, function(u) {
+      _.find(constants.usersList, function(u) {
         if(u.get('id') === op.get('userId')){
           name = u.get('name');
           return true;
@@ -317,7 +317,7 @@ export function Overlay() {
     }
     saveModel(()=>{
       saveOpinion(()=>{
-        config.mainTable.refresh();
+        constants.mainTable.refresh();
         self.close();
       });
     });

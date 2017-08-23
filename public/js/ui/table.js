@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import $ from 'jquery';
 
-import {config} from '../config.js';
+import {constants} from '../constants.js';
 
 export class Table {
   constructor(parentTable, columns, data){
@@ -76,8 +76,8 @@ export class Table {
     _.forEach(self.data, function(place){
       var row = $('<tr></tr>');
       row.click(function(){
-        config.overlay.setData(self.columns, place);
-        config.overlay.show();
+        constants.overlay.setData(self.columns, place);
+        constants.overlay.show();
       });
       _.forEach(self.columns, function(col){
         if(!col.headerName || col.visible === false){ return; }
