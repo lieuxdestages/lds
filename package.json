@@ -31,7 +31,11 @@
       "baseURL": "public",
       "packages": "public/lib"
     },
-    "dependencies": {},
+    "dependencies": {
+      "jquery": "npm:jquery@^3.2.1",
+      "lodash": "npm:lodash@^4.17.4",
+      "moment": "npm:moment@^2.18.1"
+    },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
       "babel-runtime": "npm:babel-runtime@^5.8.24",
