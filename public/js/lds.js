@@ -32,7 +32,8 @@ function updateSigninStatus(isSignedIn) {
 
 // Create or updates current user info
 function updateUsersList(profile){
-  var guser, user, name;
+  var guser, user, name,
+    save = false;
   // if userList already loaded
   if(constants.usersList && googleAuth.myId){
     if(!profile){
@@ -48,27 +49,31 @@ function updateUsersList(profile){
         user.set('type', 'Cuisine');
         user.set('name', name);
         constants.usersList.push(user);
+        save = true;
       } else {
         // if name has changed
         if(user.get('name') !== name){
           user.set('name', name);
+          save = true;
         }
       }
-      user.save(function(err){
-        var body;
-        if(err && err.body){
-          body = JSON.parse(err.body);
-          if(body.error && body.error.code === 403){
-            $('#main-alert').slideDown();
-            $('#main-alert button.close').click(function(){
-              $('#main-alert').slideUp();
-              $('#main-alert .alert-content').html('');
-            });
-            $('#main-alert .alert-content').html('Le compte ' + name + ' n\'est pas autorisé à modifier la liste. Demander à Mme Labrousse pour y avoir accès.');
-            googleAuth.signout();
+      if(save){
+        user.save(function(err){
+          var body;
+          if(err && err.body){
+            body = JSON.parse(err.body);
+            if(body.error && body.error.code === 403){
+              $('#main-alert').slideDown();
+              $('#main-alert button.close').click(function(){
+                $('#main-alert').slideUp();
+                $('#main-alert .alert-content').html('');
+              });
+              $('#main-alert .alert-content').html('Le compte ' + name + ' n\'est pas autorisé à modifier la liste. Demander à Mme Labrousse pour y avoir accès.');
+              googleAuth.signout();
+            }
           }
-        }
-      });
+        });
+      }
     }
   }
 }
