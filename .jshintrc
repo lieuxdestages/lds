@@ -34,6 +34,7 @@
     "maxstatements" : false,    // {int} Max number statements per function
     "maxcomplexity" : false,    // {int} Max cyclomatic complexity per function
     "maxlen"        : false,    // {int} Max number of characters per line
+    "strict"            : "implied", // lint the code as if there is the "use strict"; directive
     "varstmt"       : false,    // true: Disallow any var statements. Only `let` and `const` are allowed.
 
     // Relaxing
@@ -68,7 +69,7 @@
     "devel"         : true,     // Development/debugging (alert, confirm, etc)
     "dojo"          : false,    // Dojo Toolkit
     "jasmine"       : false,    // Jasmine
-    "jquery"        : true,    // jQuery
+    "jquery"        : false,    // jQuery
     "mocha"         : true,     // Mocha
     "mootools"      : false,    // MooTools
     "node"          : false,    // Node.js
@@ -85,8 +86,6 @@
 
     // Custom Globals
     "globals"       : {
-      "gapi"          : true,             // Google Client API
-      "_"               : true,             // Lodash,
-      "moment"   : true              // Moment
+      "gapi"          : true             // Google Client API
     }        // additional predefined global variables
 }
