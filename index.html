@@ -177,14 +177,11 @@
       </div> <!--overlay -->
     </main>
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/locale/fr.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/lodash/4.17.4/lodash.min.js"></script>
-
-    <script type="text/javascript" src="%BASE_PATH%/js/store.legacy.min.js"></script>
-    <script type="text/javascript" src="%BASE_PATH%/js/jquery.resizableColumns.min.js"></script>
-    <script type="text/javascript" src="%BASE_PATH%/js/lds.js"></script>
+    <script src="%BASE_PATH%/lib/system.js"></script>
+    <script src="%BASE_PATH%/config.js"></script>
+    <script>
+      System.import('js/lds.js');
+    </script>
     <script async defer src="https://apis.google.com/js/auth.js"></script>
   </body>
 </html>

@@ -141,9 +141,9 @@ module.exports = function(grunt){
         files: ['public/i18n/*.js'],
         tasks: []
       },
-      babel: {
-        files: ['js/*.js'],
-        tasks: ['babel:dev']
+      js: {
+        files: ['public/js/**/*.js'],
+        tasks: []
       },
       css: {
         files: ['less/*.less'],
@@ -153,6 +153,6 @@ module.exports = function(grunt){
   });
 
   grunt.registerTask('release', ['less', 'cssmin', 'babel:dist', 'copy:dist', 'copy:distIndex']);
-  grunt.registerTask('dev', ['less', 'babel:dev', 'connect:local', 'copy:dev', 'watch']);
+  grunt.registerTask('dev', ['less', 'connect:local', 'copy:dev', 'watch']);
   grunt.registerTask('default', ['usage']);
 };
