@@ -148,7 +148,8 @@ export function Overlay() {
     else if(select){ toggleEdit(buildSelectInput, elt, select); }
     else {
       let closeElt,
-        content;
+        content,
+        textAreaElt;
       if(elt[0] === overlayElt.find('#myrating')[0]){
         if(elt.hasClass('edit')){
           if(editElt){
@@ -191,8 +192,14 @@ export function Overlay() {
             toggleEltEdit(last);
           }
           elt.addClass('edit');
-          elt.html('<textarea class="form-control" cols="40" rows="6">' +
+          textAreaElt = $('<textarea class="form-control" cols="40" rows="6">' +
                        (opinion.get('comment') || '')  + '</textarea>');
+          textAreaElt.keyup(function(){
+            var newVal = textAreaElt.val();
+            opinion.set('comment', newVal);
+          });
+          elt.empty();
+          elt.append(textAreaElt);
           closeElt = $('<i class="fa fa-close pull-right"></i>');
           closeElt.click(function(evt){
             toggleEltEdit(elt);
@@ -281,6 +288,7 @@ export function Overlay() {
     if(editElt) { toggleEltEdit(editElt); }
     editElt = null;
     opinion = null;
+    overlayElt.find('.edit').removeClass('edit');
     $(document).unbind('scroll');
     $('body').css({'overflow':'visible'});
     $('#overlay').removeClass('enabled');
