@@ -8,6 +8,7 @@ export var googleAuth = {
   },
   signout: function(){
     gapi.auth2.getAuthInstance().signOut();
+    $('.drop-menu ul').hide();
   },
   init: function(updateSigninStatusCb, callback) {
     gapi.load('client:auth2', function () {

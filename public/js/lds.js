@@ -83,6 +83,10 @@ function loadingDone(){
   $('#loading-status').hide();
 }
 
+function showDropMenu(){
+  $('.drop-menu ul').toggle();
+}
+
 window.onload = function(){
   googleAuth.init(updateSigninStatus, function(){
     KModel.loadFromSheet(User, constants.spreadsheetId, function(err, users){
@@ -100,6 +104,7 @@ window.onload = function(){
         function newPlace(){
           constants.overlay.setData(Place.metadata, null);
           constants.overlay.show();
+          $('.drop-menu ul').hide();
         }
 
         constants.overlay = new Overlay();
@@ -107,6 +112,7 @@ window.onload = function(){
           'closeOverlay': constants.overlay.close,
           'newPlace': newPlace,
           'saveOverlay': constants.overlay.save,
+          'showDropMenu': showDropMenu,
           'signout': googleAuth.signout,
           'signin': googleAuth.signin
         };

@@ -87,7 +87,7 @@ Place.metadata = [
   { field: 'location', headerName: 'Lieu', col: 'B',
      values: ['','Centre','Mamoudzou','Nord','Petite-Terre','Sud']},
   { field: 'address', col: 'C'}, // , headerName: 'Adresse'
-  { field: 'getRate', headerName:'Pertinence de l\'entreprise'},
+  { field: 'getRate', headerName:'Note', tooltip: 'Pertinence de l\'entreprise'},
   { field: 'getRateCount', label:'Nombre d\'avis'},
   { field: 'getComments', headerName:'Commentaires'},
   { field: 'getCommentCount', label:'Nombre de commentaires'},
