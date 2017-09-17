@@ -54,6 +54,11 @@ body {
   margin: 0 12px;
   background: #FAFAFA;
 }
+@media (max-width: 360px) {
+  body {
+    margin: 0 4px;
+  }
+}
 html {
   position: relative;
   min-height: 100%;
@@ -72,7 +77,11 @@ h2 {
   display: none;
 }
 .lds-header {
+  display: flex;
   width: 100%;
+}
+.lds-header > div {
+  flex-grow: 1;
 }
 .lds-header .lds-brand {
   font-size: 18px;
@@ -86,6 +95,47 @@ h2 {
 }
 .lds-header .lds-brand .version {
   font-size: 60%;
+}
+.lds-header .drop-menu {
+  display: none;
+}
+.lds-header .drop-menu button {
+  position: absolute;
+  right: 0;
+}
+.lds-header .drop-menu ul {
+  display: none;
+  list-style: none;
+  position: absolute;
+  color: #5C6773;
+  top: 36px;
+  right: 0;
+  text-align: right;
+}
+.lds-header .drop-menu ul li {
+  padding: 16px 12px 16px 0;
+  cursor: pointer;
+  width: 160px;
+  background: #B0BEC5;
+}
+.lds-header .drop-menu ul li:first-child {
+  border-top-left-radius: 6px;
+}
+.lds-header .drop-menu ul li:last-child {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+.lds-header .drop-menu ul li:hover {
+  background: #758e9a;
+}
+@media (max-width: 580px) {
+  .lds-header .header-view {
+    display: none;
+  }
+  .lds-header .drop-menu {
+    display: inline-block;
+    position: relative;
+  }
 }
 .lds-header .right-buttons {
   text-align: right;
@@ -163,19 +213,59 @@ main .table > tbody tr td.getComments p {
 main .table > tbody tr td.getComments p:last-child {
   border-bottom: none;
 }
+@media (max-width: 360px) {
+  main .table .h-column-type,
+  main .table td.type {
+    display: none;
+  }
+  main .table thead tr > th:first-child {
+    border-top-left-radius: 0;
+  }
+}
+@media (max-width: 580px) {
+  main .table .h-column-location,
+  main .table td.location,
+  main .table .h-column-cell,
+  main .table td.cell {
+    display: none;
+  }
+}
+@media (max-width: 720px) {
+  main .table .h-column-tutor,
+  main .table td.tutor,
+  main .table .h-column-getComments,
+  main .table td.getComments {
+    display: none;
+  }
+}
+@media (max-width: 870px) {
+  main .table .h-column-phone,
+  main .table td.phone {
+    display: none;
+  }
+}
 main #overlay {
   position: fixed;
-  top: 12px;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-  padding: 12px;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
   background-color: #5C6773;
-  border-radius: 1em;
+  /*border-radius: 1em;*/
   transform: translate3d(150%, 0, 0);
   -webkit-transition: -webkit-transform 500ms;
   transition: transform 500ms;
   min-height: 420px;
+}
+main #overlay .overlay-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 12px;
+  padding-bottom: 50px;
+  overflow: auto;
 }
 main #overlay .alert {
   display: none;

@@ -51,27 +51,34 @@
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <span class="alert-content">This is a danger alert—check it out!</span>
+        <span class="alert-content">Alerte</span>
       </div>
 
       <div class="lds-header">
-        <div class="col-sm-4">
+        <div>
           <a class="lds-brand" href="/">
             <span class="fa fa-cutlery"> Lieux De Stages</span>
             <span class="version"> BETA</span>
           </a>
         </div>
-        <div class="col-sm-4 text-right">
+        <div class="text-right header-view">
           <small>
             <img class="userimg" />
             <p class="username" class="text-center"></p>
           </small>
         </div>
-        <div class="col-sm-4 right-buttons">
+        <div class="right-buttons header-view">
           <button class="lds-addplace lds-needuser btn btn-lds fa fa-plus" title="Ajouter un lieu" onclick="LDS.newPlace()"></button>
-          <button class="lds-logout lds-needuser btn btn-lds fa fa-lock" title="Lock" onclick="LDS.signout()"> Déconnexion</button>
+          <button class="lds-logout lds-needuser btn btn-lds fa fa-lock" title="Lock" onclick="LDS.signout()"><span> Déconnexion</span></button>
           <button class="lds-connect btn btn-lds fa fa-pencil-square-o" title="Edit" onclick="LDS.signin()"> Se connecter</button>
-        <div class="col-sm-4">
+        </div>
+        <div class="drop-menu">
+          <button class="lds-menu  btn btn-lds fa fa-align-justify" onclick="LDS.showDropMenu()"></button>
+          <ul>
+            <li onclick="LDS.newPlace()"><i class="fa fa-plus"></i> Nouveau lieu</li>
+            <li onclick="LDS.signout()"><i class="fa fa-lock"></i> Déconnexion</li>
+          </ul>
+        </div>
       </div>
       <div id="loading-status">
         <span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
@@ -87,99 +94,101 @@
 
       <!-- Overlay -->
       <div id="overlay">
-        <div class="alert alert-danger" role="alert">
-          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-          <span class="sr-only">Error:</span>
-          <span class="alert-content">Connectez-vous pour pouvoir éditer ce lieu.</span>
-          <button class="close pull-right"><i class="fa fa-close"></i></button>
+        <div class="overlay-content">
+          <div class="alert alert-danger" role="alert">
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            <span class="alert-content">Connectez-vous pour pouvoir éditer ce lieu.</span>
+            <button class="close pull-right"><i class="fa fa-close"></i></button>
+          </div>
+          <div class="buttons">
+            <button class="btn btn-primary pull-right" onclick="LDS.saveOverlay()">Valider</button>
+            <button class="btn btn-default btn-xs pull-right" onclick="LDS.closeOverlay()">Annuler</button>
+            <span class="saving pull-right" ><i class="fa fa-save">
+            </i> en cours</span>
+            <button class="close pull-right" onclick="LDS.closeOverlay()"><i class="fa fa-close"></i></button>
+          </div>
+          <div class="type text-center" lds-select-edit="type">Type (ex. "restaurant")</div>
+          <h2 class="name" lds-text-edit="name">Nom</h2>
+          <div class="col-sm-4"> <!-- Global params -->
+            <div class="row">
+              <div class="col-xs-4">
+                <p>Lieu</p>
+              </div>
+              <div class="col-xs-8">
+                <p class="location" lds-select-edit="location"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4">
+                <p>Adresse</p>
+              </div>
+              <div class="col-xs-8">
+                <p class="address" lds-text-edit="address"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4">
+                <p>Tuteur</p>
+              </div>
+              <div class="col-xs-8">
+                <p class="tutor" lds-text-edit="tutor"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4">
+                <p>Portable</p>
+              </div>
+              <div class="col-xs-8">
+                <p class="cell" lds-text-edit="cell"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4">
+                <p>Fixe</p>
+              </div>
+              <div class="col-xs-8">
+                <p class="phone" lds-text-edit="phone"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4">
+                <p>Fax</p>
+              </div>
+              <div class="col-xs-8">
+                <p class="fax" lds-text-edit="fax"></p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-4">
+                <p>E-mail</p>
+              </div>
+              <div class="col-xs-8">
+                <p class="email" lds-text-edit="email"></p>
+              </div>
+            </div>
+          </div><!-- End Global params -->
+          <div class="col-sm-8"><!-- Comments & rating -->
+            <div class="col-xs-6 lds-needuser">Mon avis</div>
+            <div id="myrating" class="col-xs-6 lds-needuser">Aucun avis</div>
+            <div class="col-sm-6 lds-needuser">Mon commentaire</div>
+            <div id="mycomment" class="col-sm-6 lds-needuser">Aucun commentaire</div>
+            <div class="col-sm-12 lds-needuser">---</div>
+            <div class="opinions-list">
+              <div class="col-sm-6">Moyenne des avis</div>
+              <div class="col-sm-6"><span class="getRate"></span><small class="pull-right"><span class="getRateCount"></span> avis</small></div>
+              <div class="col-sm-6">Commentaires</div>
+              <div class="col-sm-6 text-right"><small><span class="getCommentCount"></span> </small></div>
+              <div class="col-sm-12 comments"></div>
+            </div>
+          </div><!-- End Comments & rating -->
         </div>
-        <div class="buttons">
-          <button class="btn btn-primary pull-right" onclick="LDS.saveOverlay()">Valider</button>
-          <button class="btn btn-default btn-xs pull-right" onclick="LDS.closeOverlay()">Annuler</button>
-          <span class="saving pull-right" ><i class="fa fa-save">
-          </i> en cours</span>
-          <button class="close pull-right" onclick="LDS.closeOverlay()"><i class="fa fa-close"></i></button>
-        </div>
-        <div class="type text-center" lds-select-edit="type">Type (ex. "restaurant")</div>
-        <h2 class="name" lds-text-edit="name">Nom</h2>
-        <div class="col-sm-4"> <!-- Global params -->
-          <div class="row">
-            <div class="col-xs-4">
-              <p>Lieu</p>
-            </div>
-            <div class="col-xs-8">
-              <p class="location" lds-select-edit="location"></p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-4">
-              <p>Adresse</p>
-            </div>
-            <div class="col-xs-8">
-              <p class="address" lds-text-edit="address"></p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-4">
-              <p>Tuteur</p>
-            </div>
-            <div class="col-xs-8">
-              <p class="tutor" lds-text-edit="tutor"></p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-4">
-              <p>Portable</p>
-            </div>
-            <div class="col-xs-8">
-              <p class="cell" lds-text-edit="cell"></p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-4">
-              <p>Fixe</p>
-            </div>
-            <div class="col-xs-8">
-              <p class="phone" lds-text-edit="phone"></p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-4">
-              <p>Fax</p>
-            </div>
-            <div class="col-xs-8">
-              <p class="fax" lds-text-edit="fax"></p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-4">
-              <p>E-mail</p>
-            </div>
-            <div class="col-xs-8">
-              <p class="email" lds-text-edit="email"></p>
-            </div>
-          </div>
-        </div><!-- End Global params -->
-        <div class="col-sm-8"><!-- Comments & rating -->
-          <div class="col-sm-6 lds-needuser">Mon avis</div>
-          <div id="myrating" class="col-sm-6 lds-needuser">Aucun avis</div>
-          <div class="col-sm-6 lds-needuser">Mon commentaire</div>
-          <div id="mycomment" class="col-sm-6 lds-needuser">Aucun commentaire</div>
-          <div class="col-sm-12 lds-needuser">---</div>
-          <div class="opinions-list">
-            <div class="col-sm-6">Moyenne des avis</div>
-            <div class="col-sm-6"><span class="getRate"></span><small class="pull-right"><span class="getRateCount"></span> avis</small></div>
-            <div class="col-sm-6">Commentaires</div>
-            <div class="col-sm-6 text-right"><small><span class="getCommentCount"></span> </small></div>
-            <div class="col-sm-12 comments"></div>
-          </div>
-        </div><!-- End Comments & rating -->
       </div> <!--overlay -->
     </main>
 
     <script src="https://lieuxdestages.github.io/lds/lib/system.js"></script>
     <script src="https://lieuxdestages.github.io/lds/js/libs-7ccf7b18b6929b2c32860fda8f9b101d.js"></script>
-    <script src="https://lieuxdestages.github.io/lds/js/lds-ead7c9eb641c064a631ef8240b25bc9e.js"></script>
+    <script src="https://lieuxdestages.github.io/lds/js/lds-c212c403658a40b576e855e6b8780dbe.js"></script>
     <script>
       System.import('js/lds.js');
     </script>
